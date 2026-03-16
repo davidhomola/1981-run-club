@@ -228,6 +228,7 @@
       align-items: center;
       gap: 7px;
       background: rgba(255,255,255,0.05);
+      position: relative;
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: 30px;
       padding: 8px 17px;
@@ -242,19 +243,42 @@
     .vbtn.voted { background: rgba(255,200,40,0.11); border-color: rgba(255,200,40,0.28); color: #d4ac28; }
     .vbtn .em { font-size: 16px; transition: transform 0.2s; }
     .vbtn.voted .em { transform: scale(1.22) rotate(-8deg); }
-    .vlist { font-size: 11px; color: #3a3a3a; }
-    .vlist b { color: #686868; font-weight: 600; }
-    .del-btn { 
-      background: none; 
-      border: none; 
-      color: #555; 
-      cursor: pointer; 
-      font-size: 18px; 
-      padding: 4px 8px; 
-      transition: color 0.2s; 
+    .vlist {
+      font-size: 11px;
+      color: #3a3a3a;
+      display: none;
+      position: absolute;
+      background: #222;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      z-index: 100;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .vbtn:hover .vlist { display: block; }
+    .vlist b { color: #fff; font-weight: 600; }
+    .del-btn {
+      background: none;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      padding: 6px 8px;
+      transition: color 0.2s;
       opacity: 0.6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      margin-left: auto;
     }
     .del-btn:hover { color: #ff4444; opacity: 1; }
+    .del-btn svg { width: 22px; height: 22px; }
 
 
     /* ── ADD SECTION ── */
@@ -394,20 +418,181 @@
       header h1 { font-size: 36px; }
       .add-form { padding: 20px; }
     }
-  </style>
+  
+    /* ── WELCOME NAME MODAL ── */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-card {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 50px 40px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      border: 1px solid #2a2a2a;
+      text-align: center;
+      position: relative;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #666;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+    .modal-close-btn:hover {
+      color: #999;
+    }
+    .modal-card.has-saved-name .modal-close-btn {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-heading {
+      font-family: 'Beastly', serif;
+      font-size: 36px;
+      color: var(--cream);
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+    .modal-subtext {
+      font-family: 'Montreal', sans-serif;
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 30px;
+      letter-spacing: 0.05em;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Montreal', sans-serif;
+      font-size: 16px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease;
+    }
+    .modal-input:focus {
+      outline: none;
+      border-color: var(--cream);
+    }
+    .modal-input::placeholder {
+      color: #555;
+    }
+    .modal-button {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--cream);
+      border: none;
+      border-radius: 12px;
+      color: #000;
+      font-family: 'Montreal', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .modal-button:hover:not(:disabled) {
+      background: #fff;
+      transform: scale(1.02);
+    }
+    .modal-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .change-name-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 11px;
+      color: #666;
+      background: none;
+      border: 1px solid #333;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Montreal', sans-serif;
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+      z-index: 9998;
+    }
+    .change-name-btn:hover {
+      color: #999;
+      border-color: #555;
+    }
+    @media (max-width: 600px) {
+      .modal-card {
+        padding: 40px 30px;
+      }
+      .modal-heading {
+        font-size: 28px;
+      }
+      .change-name-btn {
+        top: 52px;
+        right: 48px;
+      }
+    }
+</style>
 </head>
 <body>
 
 <header>
   <div>
     <h1>1981 RUN CLUB</h1>
-    <p>Hlasování o barvách &middot; 2025&ndash;2026</p>
+    <p>Hlasování o barvách &middot; 2026</p>
   </div>
   <div id="sync-pill" class="sync-pill local">
     <span class="sync-dot"></span>
     <span id="sync-txt">Lokální &mdash; nastav sync</span>
   </div>
 </header>
+
+<!-- ── WELCOME NAME MODAL ── -->
+<div id="nameModal" class="modal-overlay">
+  <div class="modal-card">
+    <button id="modalCloseBtn" class="modal-close-btn">×</button>
+    <div class="modal-heading">Vítej v 1981 Run Club!</div>
+    <div class="modal-subtext">Jak se jmenuješ?</div>
+    <input type="text" id="modalNameInput" class="modal-input" placeholder="Tvoje jméno" maxlength="40" autocomplete="off"/>
+    <button id="modalButton" class="modal-button" disabled>Pokračovat →</button>
+  </div>
+</div>
+
+<!-- Change name button -->
+<button id="changeNameBtn" class="change-name-btn">Změnit jméno</button>
+
 
 <div class="sec-label">Naše 2 kombinace</div>
 <div id="official-slot"></div>
@@ -420,12 +605,6 @@
   <h2>VLASTNÍ BARVY</h2>
   <p>Navrhni novou kombinaci &mdash; ostatní na ni mohou hlasovat.</p>
   <div class="add-form">
-    <div class="frow">
-      <div class="ffield" style="flex:2;">
-        <label>Tvoje jméno</label>
-        <input type="text" id="inp-name" placeholder="Např. Martin" maxlength="40"/>
-      </div>
-    </div>
     <div class="frow">
       <div class="ffield">
         <label>Barva 1 &mdash; primární</label>
@@ -472,7 +651,7 @@
     <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
   </div>
 
-<footer>1981 Run Club &middot; Hlasování o barvách &middot; 2025&ndash;2026</footer>
+<footer>1981 Run Club &middot; Hlasování o barvách &middot; 2026</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
@@ -534,7 +713,7 @@ function pushEntry(data) {
 function castVote(id, voter, type) {
   if (db) {
     db.ref('/combos/' + id).transaction(e => {
-      if (!e) return e;
+      if (!e) e = { voters: [], voteCount: 0, downvoters: [], downvoteCount: 0 };
       if (type === 'up') {
         if (!e.voters) e.voters = [];
         if (!e.downvoters) e.downvoters = [];
@@ -653,13 +832,13 @@ function comboHTML(id, d) {
       <div class="vote-row">
         <button class="vbtn" id="vb-${id}" onclick="handleVote('${id}', 'up')">
           <span class="em">👍</span><span id="vc-${id}">${n}</span>
+          <div class="vlist" id="vl-${id}">${votersHTML}</div>
         </button>
         <button class="vbtn" id="vbd-${id}" onclick="handleVote('${id}', 'down')">
           <span class="em">👎</span><span id="vcd-${id}">${dn}</span>
+          <div class="vlist" id="vld-${id}">${downvotersHTML}</div>
         </button>
-        <div class="vlist" id="vl-${id}">${votersHTML}</div>
-        <div class="vlist" id="vld-${id}">${downvotersHTML}</div>
-        <button class="del-btn" onclick="handleDelete('${id}')" title="Delete combination">🗑️</button>
+        <button class="del-btn" onclick="handleDelete('${id}')" title="Delete combination"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"></path></svg></button>
       </div>
     </div>
   </div>`;
@@ -687,15 +866,42 @@ function updateVoteUI(id, count, voters, downCount, downvoters) {
   const vl = document.getElementById('vl-' + id);
   const vcd = document.getElementById('vcd-' + id);
   const vld = document.getElementById('vld-' + id);
+  const vbUp = document.getElementById('vb-' + id);
+  const vbDown = document.getElementById('vbd-' + id);
+  const currentUser = localStorage.getItem('1981rc_username');
+
   if (vc) vc.textContent = count;
   if (vl) vl.innerHTML = voters.length ? voters.map(x=>`<b>${x}</b>`).join(', ') : '';
   if (vcd) vcd.textContent = downCount || 0;
   if (vld) vld.innerHTML = downvoters && downvoters.length ? downvoters.map(x=>`<b>${x}</b>`).join(', ') : '';
+
+  // Update voted state styling
+  if (vbUp) {
+    if (currentUser && voters && voters.includes(currentUser)) {
+      vbUp.classList.add('voted');
+    } else {
+      vbUp.classList.remove('voted');
+    }
+  }
+  if (vbDown) {
+    if (currentUser && downvoters && downvoters.includes(currentUser)) {
+      vbDown.classList.add('voted');
+    } else {
+      vbDown.classList.remove('voted');
+    }
+  }
 }
 
 function handleVote(id, type) {
-  const name = prompt('Zadej své jméno:');
-  if (!name || !name.trim()) return;
+  let name = localStorage.getItem('1981rc_username');
+  if (!name || !name.trim()) {
+    // Show modal if no name is saved
+    showNameModal(() => {
+      name = localStorage.getItem('1981rc_username');
+      if (name && name.trim()) castVote(id, name.trim(), type || 'up');
+    });
+    return;
+  }
   castVote(id, name.trim(), type || 'up');
 }
 
@@ -739,13 +945,91 @@ document.getElementById('fh2').addEventListener('input', e => {
   }
 });
 
+
+// ── NAME MODAL LOGIC ──────────────────────────────────────────
+function showNameModal(callback, hasExistingName = false) {
+  const modal = document.getElementById('nameModal');
+  const modalCard = modal.querySelector('.modal-card');
+  const input = document.getElementById('modalNameInput');
+  const btn = document.getElementById('modalButton');
+  const closeBtn = document.getElementById('modalCloseBtn');
+
+  modal.classList.add('active');
+  input.value = '';
+  input.focus();
+
+  // Add class to show close button if editing existing name
+  if (hasExistingName) {
+    modalCard.classList.add('has-saved-name');
+  } else {
+    modalCard.classList.remove('has-saved-name');
+  }
+
+  const handleSubmit = () => {
+    const name = input.value.trim();
+    if (!name) return;
+    localStorage.setItem('1981rc_username', name);
+    modal.classList.remove('active');
+    input.value = '';
+    if (callback) callback();
+  };
+
+  const handleClose = () => {
+    // Close without saving when close button is clicked
+    if (hasExistingName) {
+      modal.classList.remove('active');
+      input.value = '';
+    }
+  };
+
+  btn.onclick = handleSubmit;
+  closeBtn.onclick = handleClose;
+  input.onkeypress = (e) => {
+    if (e.key === 'Enter') handleSubmit();
+  };
+}
+
+function changeUserName() {
+  // Show modal with existing name, so close button is visible
+  showNameModal(null, true);
+}
+
+// Initialize modal on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const changeBtn = document.getElementById('changeNameBtn');
+  changeBtn.onclick = changeUserName;
+
+  // Show welcome modal only if no name is saved
+  const savedName = localStorage.getItem('1981rc_username');
+  if (!savedName) {
+    showNameModal();
+  }
+  
+  // Set up input listener to enable/disable modal button
+  const modalInput = document.getElementById('modalNameInput');
+  const modalBtn = document.getElementById('modalButton');
+  if (modalInput && modalBtn) {
+    modalInput.addEventListener('input', (e) => {
+      modalBtn.disabled = !e.target.value.trim();
+    });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
+
 function submitCombo() {
-  const name = document.getElementById('inp-name').value.trim();
-  if (!name) { alert('Zadej prosím své jméno.'); return; }
+  let name = localStorage.getItem('1981rc_username');
+  if (!name || !name.trim()) {
+    alert('Zadej prosím své jméno v modálním okně.');
+    showNameModal(() => {
+      name = localStorage.getItem('1981rc_username');
+      if (name && name.trim()) submitCombo();
+    });
+    return;
+  }
   pushEntry({ color1: document.getElementById('fc1').value,
               color2: document.getElementById('fc2').value,
               name, voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:false, timestamp: Date.now() });
-  document.getElementById('inp-name').value = '';
   document.getElementById('fc1').value = '#1D5FCC';
   document.getElementById('fc2').value = '#F5F5F0';
   document.getElementById('fh1').textContent = '#1D5FCC';
@@ -795,12 +1079,22 @@ function init() {
 
   subscribeAll(all => {
     seedOfficial(all);
-    const sorted = Object.entries(all).sort((a,b) => a[1].official ? -1 : b[1].official ? 1 : (a[1].timestamp||0)-(b[1].timestamp||0));
+    const sorted = Object.entries(all).sort((a,b) => a[1].official ? -1 : b[1].official ? 1 : (b[1].timestamp||0)-(a[1].timestamp||0));
     sorted.forEach(([id, data]) => renderEntry(id, data));
   });
 }
 
 init();
 </script>
+
+<!-- ── PUMA FOOTER ── -->
+<footer style="text-align:center; padding: 40px 20px 40px; opacity: 0.55;">
+  <p style="font-family: -apple-system, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #666; margin-bottom: 16px;">Supported by</p>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Puma_AG.svg/240px-Puma_AG.svg.png"
+       alt="Puma"
+       style="height: 52px; filter: brightness(0) invert(1); opacity: 0.75;"
+       onerror="this.style.display='none'">
+</footer>
+
 </body>
 </html>
