@@ -169,10 +169,10 @@
     .combo-sub .tag-m { font-size: clamp(12px, 1.43vw, 21px); }
 
     /* Tagline staircase indents — same proportions at every size */
-    .tag-m span:nth-child(1) { padding-left: 14%; }   /* START WITH     */
+    .tag-m span:nth-child(1) { padding-left: 27%; }   /* START WITH     */
     .tag-m span:nth-child(2) { padding-left: 0%;  }   /* A RUN, FINISH  */
-    .tag-m span:nth-child(3) { padding-left: 26%; }   /* WITH COFFEE    */
-    .tag-m span:nth-child(4) { padding-left: 46%; }   /* AND FUN        */
+    .tag-m span:nth-child(3) { padding-left: 28%; }   /* WITH COFFEE    */
+    .tag-m span:nth-child(4) { padding-left: 48%; }   /* AND FUN        */
 
     /* ── FOOTER ── */
     .combo-foot {
@@ -189,7 +189,7 @@
       margin-bottom: 14px;
     }
     .combo-name-line {
-      font-family: 'Beastly', serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       font-size: 18px;
       letter-spacing: 0.5px;
       color: #aaa;
@@ -244,6 +244,18 @@
     .vbtn.voted .em { transform: scale(1.22) rotate(-8deg); }
     .vlist { font-size: 11px; color: #3a3a3a; }
     .vlist b { color: #686868; font-weight: 600; }
+    .del-btn { 
+      background: none; 
+      border: none; 
+      color: #555; 
+      cursor: pointer; 
+      font-size: 18px; 
+      padding: 4px 8px; 
+      transition: color 0.2s; 
+      opacity: 0.6;
+    }
+    .del-btn:hover { color: #ff4444; opacity: 1; }
+
 
     /* ── ADD SECTION ── */
     .add-sec {
@@ -417,16 +429,22 @@
     <div class="frow">
       <div class="ffield">
         <label>Barva 1 &mdash; primární</label>
-        <div class="cw" onclick="document.getElementById('fc1').click()">
-          <input type="color" id="fc1" value="#1D5FCC"/>
-          <span class="hx" id="fh1">#1D5FCC</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div class="cw" onclick="document.getElementById('fc1').click()">
+            <input type="color" id="fc1" value="#1D5FCC"/>
+            <span class="hx">#</span>
+          </div>
+          <input type="text" id="fh1" value="1D5FCC" maxlength="6" style="width:80px; padding:8px 14px; background:#202020; border:1px solid #2e2e2e; border-radius:10px; color:#888; font-family:monospace; font-size:12px;" placeholder="000000"/>
         </div>
       </div>
       <div class="ffield">
         <label>Barva 2 &mdash; sekundární</label>
-        <div class="cw" onclick="document.getElementById('fc2').click()">
-          <input type="color" id="fc2" value="#F5F5F0"/>
-          <span class="hx" id="fh2">#F5F5F0</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div class="cw" onclick="document.getElementById('fc2').click()">
+            <input type="color" id="fc2" value="#F5F5F0"/>
+            <span class="hx">#</span>
+          </div>
+          <input type="text" id="fh2" value="F5F5F0" maxlength="6" style="width:80px; padding:8px 14px; background:#202020; border:1px solid #2e2e2e; border-radius:10px; color:#888; font-family:monospace; font-size:12px;" placeholder="000000"/>
         </div>
       </div>
     </div>
@@ -453,22 +471,6 @@
 
     <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
   </div>
-
-  <!-- Firebase setup guide -->
-  <div class="fb-guide">
-    <h3>NASTAVENÍ SYNCHRONIZACE</h3>
-    <p>Aby všichni viděli stejné hlasy a návrhy v reálném čase, propoj stránku s Firebase (zdarma, bez serveru).</p>
-    <ol>
-      <li>Jdi na <b>console.firebase.google.com</b> a vytvoř nový projekt</li>
-      <li>V levém menu zvol <code>Realtime Database</code> &rarr; <b>Vytvořit databázi</b></li>
-      <li>Zvol <b>Start in test mode</b> &rarr; Potvrdit</li>
-      <li>Jdi do <code>Project Settings</code> &rarr; záložka <b>General</b> &rarr; scroll dolů &rarr; klikni <code>&lt;/&gt;</code> (Web app)</li>
-      <li>Zaregistruj aplikaci &rarr; zkopíruj celý objekt <code>firebaseConfig</code></li>
-      <li>Otevři tento HTML soubor v textovém editoru a vlož config na místo označené níže jako <code>FIREBASE_CONFIG</code></li>
-      <li>Nahraj soubor zpět na FTP &rarr; hotovo</li>
-    </ol>
-  </div>
-</div>
 
 <footer>1981 Run Club &middot; Hlasování o barvách &middot; 2025&ndash;2026</footer>
 
@@ -529,24 +531,79 @@ function pushEntry(data) {
   }
 }
 
-function castVote(id, voter) {
+function castVote(id, voter, type) {
   if (db) {
     db.ref('/combos/' + id).transaction(e => {
       if (!e) return e;
-      if (!e.voters) e.voters = [];
-      const i = e.voters.indexOf(voter);
-      if (i >= 0) { e.voters.splice(i,1); e.voteCount = Math.max(0,(e.voteCount||0)-1); }
-      else         { e.voters.push(voter); e.voteCount = (e.voteCount||0)+1; }
+      if (type === 'up') {
+        if (!e.voters) e.voters = [];
+        if (!e.downvoters) e.downvoters = [];
+        const upIdx = e.voters.indexOf(voter);
+        const downIdx = e.downvoters.indexOf(voter);
+        if (upIdx >= 0) {
+          e.voters.splice(upIdx,1);
+          e.voteCount = Math.max(0,(e.voteCount||0)-1);
+        } else {
+          if (downIdx >= 0) {
+            e.downvoters.splice(downIdx,1);
+            e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
+          }
+          e.voters.push(voter);
+          e.voteCount = (e.voteCount||0)+1;
+        }
+      } else {
+        if (!e.downvoters) e.downvoters = [];
+        if (!e.voters) e.voters = [];
+        const downIdx = e.downvoters.indexOf(voter);
+        const upIdx = e.voters.indexOf(voter);
+        if (downIdx >= 0) {
+          e.downvoters.splice(downIdx,1);
+          e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
+        } else {
+          if (upIdx >= 0) {
+            e.voters.splice(upIdx,1);
+            e.voteCount = Math.max(0,(e.voteCount||0)-1);
+          }
+          e.downvoters.push(voter);
+          e.downvoteCount = (e.downvoteCount||0)+1;
+        }
+      }
       return e;
     });
   } else {
     const d = lsLoad();
-    const e = d[id] || { voters:[], voteCount:0 };
-    const i = e.voters.indexOf(voter);
-    if (i >= 0) { e.voters.splice(i,1); e.voteCount = Math.max(0,(e.voteCount||0)-1); }
-    else         { e.voters.push(voter); e.voteCount = (e.voteCount||0)+1; }
+    const e = d[id] || { voters:[], voteCount:0, downvoters:[], downvoteCount:0 };
+    if (type === 'up') {
+      const upIdx = e.voters.indexOf(voter);
+      const downIdx = (e.downvoters || []).indexOf(voter);
+      if (upIdx >= 0) {
+        e.voters.splice(upIdx,1);
+        e.voteCount = Math.max(0,(e.voteCount||0)-1);
+      } else {
+        if (downIdx >= 0) {
+          e.downvoters.splice(downIdx,1);
+          e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
+        }
+        e.voters.push(voter);
+        e.voteCount = (e.voteCount||0)+1;
+      }
+    } else {
+      const downIdx = (e.downvoters || []).indexOf(voter);
+      const upIdx = e.voters.indexOf(voter);
+      if (downIdx >= 0) {
+        e.downvoters.splice(downIdx,1);
+        e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
+      } else {
+        if (upIdx >= 0) {
+          e.voters.splice(upIdx,1);
+          e.voteCount = Math.max(0,(e.voteCount||0)-1);
+        }
+        e.downvoters.push(voter);
+        e.downvoteCount = (e.downvoteCount||0)+1;
+      }
+    }
     d[id] = e; lsSave(d);
-    updateVoteUI(id, e.voteCount, e.voters);
+    updateVoteUI(id, e.voteCount, e.voters, e.downvoteCount, e.downvoters);
   }
 }
 
@@ -556,8 +613,11 @@ function comboHTML(id, d) {
   const c2 = d.color2 || '#EDEEE5';
   const v  = d.voters || [];
   const n  = d.voteCount || 0;
-  const byLine = d.name ? `<div class="combo-by">Návrh od <b>${d.name}</b></div>` : '';
+  const dv = d.downvoters || [];
+  const dn = d.downvoteCount || 0;
+  const submitterName = d.submittedBy || d.name; const byLine = submitterName ? `<div class="combo-by">Návrh od <b>${submitterName}</b></div>` : '';
   const votersHTML = v.length ? v.map(x=>`<b>${x}</b>`).join(', ') : '';
+  const downvotersHTML = dv.length ? dv.map(x=>`<b>${x}</b>`).join(', ') : '';
 
   return `<div class="combo ${d.official?'official':''}" id="cb-${id}">
     <div class="combo-main" style="background:${c1}">
@@ -591,17 +651,22 @@ function comboHTML(id, d) {
         </div>
       </div>
       <div class="vote-row">
-        <button class="vbtn" id="vb-${id}" onclick="handleVote('${id}')">
+        <button class="vbtn" id="vb-${id}" onclick="handleVote('${id}', 'up')">
           <span class="em">👍</span><span id="vc-${id}">${n}</span>
         </button>
+        <button class="vbtn" id="vbd-${id}" onclick="handleVote('${id}', 'down')">
+          <span class="em">👎</span><span id="vcd-${id}">${dn}</span>
+        </button>
         <div class="vlist" id="vl-${id}">${votersHTML}</div>
+        <div class="vlist" id="vld-${id}">${downvotersHTML}</div>
+        <button class="del-btn" onclick="handleDelete('${id}')" title="Delete combination">🗑️</button>
       </div>
     </div>
   </div>`;
 }
 
 function renderEntry(id, data) {
-  if (rendered[id]) { updateVoteUI(id, data.voteCount||0, data.voters||[]); return; }
+  if (rendered[id]) { updateVoteUI(id, data.voteCount||0, data.voters||[], data.downvoteCount||0, data.downvoters||[]); return; }
   rendered[id] = true;
   const h = comboHTML(id, data);
   if (data.official) {
@@ -617,17 +682,21 @@ function renderEntry(id, data) {
   }
 }
 
-function updateVoteUI(id, count, voters) {
+function updateVoteUI(id, count, voters, downCount, downvoters) {
   const vc = document.getElementById('vc-' + id);
   const vl = document.getElementById('vl-' + id);
+  const vcd = document.getElementById('vcd-' + id);
+  const vld = document.getElementById('vld-' + id);
   if (vc) vc.textContent = count;
   if (vl) vl.innerHTML = voters.length ? voters.map(x=>`<b>${x}</b>`).join(', ') : '';
+  if (vcd) vcd.textContent = downCount || 0;
+  if (vld) vld.innerHTML = downvoters && downvoters.length ? downvoters.map(x=>`<b>${x}</b>`).join(', ') : '';
 }
 
-function handleVote(id) {
+function handleVote(id, type) {
   const name = prompt('Zadej své jméno:');
   if (!name || !name.trim()) return;
-  castVote(id, name.trim());
+  castVote(id, name.trim(), type || 'up');
 }
 
 // ── FORM ─────────────────────────────────────────────────────────
@@ -643,12 +712,31 @@ function updateFP(c1, c2) {
 }
 
 document.getElementById('fc1').addEventListener('input', e => {
-  document.getElementById('fh1').textContent = e.target.value.toUpperCase();
+  const hexVal = e.target.value.substring(1); // Remove # from color picker
+  document.getElementById('fh1').value = hexVal.toUpperCase();
   updateFP(e.target.value, document.getElementById('fc2').value);
 });
+document.getElementById('fh1').addEventListener('input', e => {
+  let hex = e.target.value.trim().toUpperCase();
+  if (!hex.startsWith('#')) hex = '#' + hex;
+  if (/^#[0-9A-F]{6}$/.test(hex)) {
+    document.getElementById('fc1').value = hex;
+    updateFP(hex, document.getElementById('fc2').value);
+  }
+});
+
 document.getElementById('fc2').addEventListener('input', e => {
-  document.getElementById('fh2').textContent = e.target.value.toUpperCase();
+  const hexVal = e.target.value.substring(1); // Remove # from color picker
+  document.getElementById('fh2').value = hexVal.toUpperCase();
   updateFP(document.getElementById('fc1').value, e.target.value);
+});
+document.getElementById('fh2').addEventListener('input', e => {
+  let hex = e.target.value.trim().toUpperCase();
+  if (!hex.startsWith('#')) hex = '#' + hex;
+  if (/^#[0-9A-F]{6}$/.test(hex)) {
+    document.getElementById('fc2').value = hex;
+    updateFP(document.getElementById('fc1').value, hex);
+  }
 });
 
 function submitCombo() {
@@ -656,13 +744,35 @@ function submitCombo() {
   if (!name) { alert('Zadej prosím své jméno.'); return; }
   pushEntry({ color1: document.getElementById('fc1').value,
               color2: document.getElementById('fc2').value,
-              name, voteCount:0, voters:[], official:false, timestamp: Date.now() });
+              name, voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:false, timestamp: Date.now() });
   document.getElementById('inp-name').value = '';
   document.getElementById('fc1').value = '#1D5FCC';
   document.getElementById('fc2').value = '#F5F5F0';
   document.getElementById('fh1').textContent = '#1D5FCC';
   document.getElementById('fh2').textContent = '#F5F5F0';
   updateFP('#1D5FCC','#F5F5F0');
+}
+
+
+// ── DELETE ─────────────────────────────────────────────────────────
+function handleDelete(id) {
+  const pwd = prompt('Password required to delete this combo:');
+  if (!pwd) return;
+  if (pwd !== '1981admin') {
+    alert('Wrong password!');
+    return;
+  }
+  if (confirm('Are you sure you want to delete this combination?')) {
+    if (db) {
+      db.ref('/combos/' + id).remove();
+    } else {
+      const d = lsLoad();
+      delete d[id];
+      lsSave(d);
+    }
+    const el = document.getElementById('cb-' + id);
+    if (el) el.remove();
+  }
 }
 
 // ── INIT ─────────────────────────────────────────────────────────
@@ -672,8 +782,8 @@ function init() {
   // Seed official entries
   const seedOfficial = (existing) => {
     const entries = [
-      { key:'official',  data:{ color1:'#FF2D00', color2:'#EDEEE5', name:'Red & Cream', voteCount:0, voters:[], official:true, timestamp:0 } },
-      { key:'official2', data:{ color1:'#1D5FCC', color2:'#EDEEE5', name:'Blue & Cream', voteCount:0, voters:[], official:true, timestamp:1 } }
+      { key:'official',  data:{ color1:'#ff2700', color2:'#f1efe4', submittedBy: 'Adéla', name:'Red & Cream', voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:true, timestamp:0 } },
+      { key:'official2', data:{ color1:'#004eaf', color2:'#f1efe4', submittedBy: 'David a Jan', name:'Blue & Cream', voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:true, timestamp:1 } }
     ];
     entries.forEach(({ key, data }) => {
       if (!existing || !existing[key]) {
