@@ -106,6 +106,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      container-type: inline-size;
+      container-name: main-card;
     }
 
     /* SUB ROW — 3 equal cards */
@@ -124,6 +126,8 @@
       position: relative;
       overflow: hidden;
       border-radius: 12px;
+      container-type: inline-size;
+      container-name: sub-card;
     }
     .sub-tag {
       position: absolute;
@@ -138,39 +142,48 @@
     /* ── LOGO (Beastly) ── */
     .logo-b {
       font-family: 'Beastly', serif;
-      line-height: 0.87;
+      line-height: 0.85;
       text-align: center;
-      letter-spacing: 0.5px;
+      letter-spacing: -0.5px;
       user-select: none;
     }
     .logo-b s1, .logo-b s2, .logo-b s3 { display: block; }
 
-    /* Main card sizes */
-    .combo-main .logo-b s1 { font-size: clamp(70px, 9.1vw, 135px); }
-    .combo-main .logo-b s2 { font-size: clamp(86px, 11.3vw, 166px); }
-    .combo-main .logo-b s3 { font-size: clamp(86px, 11.3vw, 166px); }
-
-    /* Sub card sizes */
-    .combo-sub .logo-b s1 { font-size: clamp(21px, 2.6vw, 39px); }
-    .combo-sub .logo-b s2 { font-size: clamp(26px, 3.3vw, 49px); }
-    .combo-sub .logo-b s3 { font-size: clamp(26px, 3.3vw, 49px); }
+    /* Logo sizes via container queries — identical proportions on every card size */
+    @container main-card (min-width: 1px) {
+      .logo-b s1 { font-size: 19cqw; }
+      .logo-b s2 { font-size: 19cqw; }
+      .logo-b s3 { font-size: 19cqw; }
+    }
+    @container sub-card (min-width: 1px) {
+      .logo-b s1 { font-size: 19cqw; }
+      .logo-b s2 { font-size: 19cqw; }
+      .logo-b s3 { font-size: 19cqw; }
+    }
 
     /* ── TAGLINE (Montreal) ── */
     .tag-m {
       font-family: 'Montreal', sans-serif;
       text-align: left;
-      line-height: 1.1;
+      line-height: 1.15;
       padding: 7% 5% 7% 5%;
       user-select: none;
+      width: 100%;
     }
-    .tag-m s { display: block; }
+    /* FIX: span must be block so each line renders separately */
+    .tag-m span { display: block; white-space: nowrap; }
 
-    /* Sub card tagline size */
-    .combo-sub .tag-m { font-size: clamp(12px, 1.43vw, 21px); }
+    /* Tagline font — container-relative for identical proportions */
+    @container sub-card (min-width: 1px) {
+      .tag-m { font-size: 4.8cqw; }
+    }
+    @container main-card (min-width: 1px) {
+      .tag-m { font-size: 4.8cqw; }
+    }
 
-    /* Tagline staircase indents — same proportions at every size */
+    /* Tagline staircase indents */
     .tag-m span:nth-child(1) { padding-left: 27%; }   /* START WITH     */
-    .tag-m span:nth-child(2) { padding-left: 0%;  }   /* A RUN, FINISH  */
+    .tag-m span:nth-child(2) { padding-left: 2%;  }   /* A RUN, FINISH  */
     .tag-m span:nth-child(3) { padding-left: 28%; }   /* WITH COFFEE    */
     .tag-m span:nth-child(4) { padding-left: 48%; }   /* AND FUN        */
 
@@ -289,8 +302,8 @@
     }
     .add-sec h2 {
       font-family: 'Beastly', serif;
-      font-size: 42px;
-      color: var(--cream);
+      font-size: 64px;
+      color: #ff2700;
       margin-bottom: 6px;
     }
     .add-sec > p { font-size: 13px; color: #404040; margin-bottom: 36px; letter-spacing: 0.04em; }
@@ -338,7 +351,7 @@
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 20px;
-      border: 1px solid #252525;
+      border: 1px solid #d0cdc2;
     }
     .fp-main {
       width: 100%;
@@ -346,10 +359,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      container-type: inline-size;
+      container-name: fp-main-card;
     }
-    .fp-main .logo-b s1 { font-size: clamp(39px, 4.9vw, 75px); }
-    .fp-main .logo-b s2 { font-size: clamp(47px, 6vw, 91px); }
-    .fp-main .logo-b s3 { font-size: clamp(47px, 6vw, 91px); }
+    @container fp-main-card (min-width: 1px) {
+      .logo-b s1 { font-size: 11.4cqw; }
+      .logo-b s2 { font-size: 11.4cqw; }
+      .logo-b s3 { font-size: 11.4cqw; }
+    }
     .fp-subs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -364,11 +381,15 @@
       justify-content: center;
       border-radius: 8px;
       overflow: hidden;
+      container-type: inline-size;
+      container-name: fp-sub-card;
     }
-    .fp-sub .logo-b s1 { font-size: clamp(13px, 1.56vw, 23px); }
-    .fp-sub .logo-b s2 { font-size: clamp(16px, 1.95vw, 29px); }
-    .fp-sub .logo-b s3 { font-size: clamp(16px, 1.95vw, 29px); }
-    .fp-sub .tag-m { font-size: clamp(8px, 0.91vw, 13px); }
+    @container fp-sub-card (min-width: 1px) {
+      .logo-b s1 { font-size: 11.4cqw; }
+      .logo-b s2 { font-size: 11.4cqw; }
+      .logo-b s3 { font-size: 11.4cqw; }
+      .tag-m { font-size: 4.8cqw; }
+    }
 
     .submit-btn {
       display: inline-flex;
@@ -608,7 +629,6 @@
 <header>
   <div>
     <h1>1981 RUN CLUB</h1>
-    <p>Hlasování o barvách &middot; 2026</p>
   </div>
   <div id="sync-pill" class="sync-pill local">
     <span class="sync-dot"></span>
@@ -674,7 +694,6 @@
     <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
   </div>
 
-<footer>1981 Run Club &middot; Hlasování o barvách &middot; 2026</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
@@ -1142,10 +1161,32 @@ function init() {
     seedOfficial(all);
     const sorted = Object.entries(all).sort((a,b) => a[1].official ? 1 : b[1].official ? -1 : (b[1].timestamp||0)-(a[1].timestamp||0));
     sorted.forEach(([id, data]) => renderEntry(id, data));
+    renderTop3(all);
   });
 }
 
 init();
+
+// ── TOP 3 ────────────────────────────────────────────────────────
+function renderTop3(all) {
+  const el = document.getElementById('top3-icons');
+  if (!el) return;
+  const entries = Object.entries(all)
+    .map(([k, v]) => ({ id: k, color1: v.color1||'#000', color2: v.color2||'#fff', votes: (v.voteCount||0)-(v.downvoteCount||0) }))
+    .sort((a, b) => b.votes - a.votes)
+    .slice(0, 3);
+  const medals = ['🥇','🥈','🥉'];
+  const sizes  = [72, 60, 60];
+  el.innerHTML = entries.map((e, i) => `
+    <div style="text-align:center;cursor:pointer;" onclick="document.getElementById('cb-${e.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">
+      <div style="width:${sizes[i]}px;height:${sizes[i]}px;border-radius:10px;overflow:hidden;border:2px solid rgba(0,0,0,0.1);margin:0 auto 6px;box-shadow:0 2px 8px rgba(0,0,0,0.12);display:flex;">
+        <div style="flex:1;background:${e.color1};"></div>
+        <div style="flex:1;background:${e.color2};"></div>
+      </div>
+      <div style="font-size:20px;line-height:1;">${medals[i]}</div>
+      <div style="font-size:10px;color:#888;font-family:-apple-system,sans-serif;margin-top:3px;">${e.votes} hlasů</div>
+    </div>`).join('');
+}
 </script>
 
 <!-- ── MOTHERLODE MODAL ── -->
@@ -1177,6 +1218,12 @@ init();
     <p id="mlode-msg">Dobrý pokus!</p>
     <button class="mlode-close" onclick="document.getElementById('motherlodeModal').classList.remove('active')">Zavřít</button>
   </div>
+</div>
+
+<!-- ── TOP 3 ── -->
+<div id="top3-bar" style="margin: 60px 0 20px; padding: 40px 0 32px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align:center;">
+  <h2 style="font-family:'Beastly',serif; font-size:52px; color:#ff2700; line-height:1; margin-bottom:28px; letter-spacing:0.5px;">TOP 3</h2>
+  <div id="top3-icons" style="display:flex; justify-content:center; gap:28px; align-items:flex-end;"></div>
 </div>
 
 <!-- ── PUMA FOOTER ── -->
