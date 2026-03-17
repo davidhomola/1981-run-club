@@ -261,14 +261,20 @@
       display: flex;
       align-items: center;
       gap: 7px;
+      cursor: pointer;
+      padding: 3px 6px 3px 3px;
+      border-radius: 20px;
+      transition: background 0.15s;
     }
+    .ch:hover { background: rgba(0,0,0,0.07); }
     .ch-dot {
       width: 20px; height: 20px;
       border-radius: 50%;
       border: 1px solid rgba(0,0,0,0.15);
       flex-shrink: 0;
     }
-    .ch-hex { font-size: 10px; font-family: monospace; color: #484848; }
+    .ch-hex { font-size: 10px; font-family: monospace; color: #484848; transition: color 0.2s; }
+    .ch.copied .ch-hex { color: #22a060; }
 
     /* ── VOTE ── */
     .vote-row {
@@ -467,6 +473,11 @@
       box-shadow: 0 3px 12px rgba(255,39,0,0.25);
     }
     .submit-btn:hover { background: #e02000; transform: scale(1.04); box-shadow: 0 5px 16px rgba(255,39,0,0.35); }
+    .submit-out-wrap { display: none; }
+    @media (max-width: 900px) {
+      .submit-in { display: none !important; }
+      .submit-out-wrap { display: flex; justify-content: flex-end; margin-top: 14px; }
+    }
 
     .random-btn {
       display: inline-flex;
@@ -546,6 +557,101 @@
     .mlode-card h2 { font-family:'Beastly',serif; font-size:28px; color:#4be84b; margin-bottom:8px; }
     .mlode-card p { font-size:14px; color:#ccc; margin-bottom:20px; }
     .mlode-close { background:#4be84b; color:#000; border:none; border-radius:20px; padding:10px 28px; font-size:13px; cursor:pointer; font-family:'Montreal',sans-serif; letter-spacing:0.08em; }
+
+    /* ── SHADE PICKER MODAL ── */
+    .shade-modal {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.55); z-index: 9990;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.2s;
+    }
+    .shade-modal.active { opacity: 1; visibility: visible; }
+    .shade-modal-inner {
+      background: var(--bg); border-radius: 20px; padding: 28px 28px 24px;
+      max-width: 680px; width: 92%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .shade-modal-title {
+      font-family: 'Beastly', serif; font-size: 24px; color: #1a1a1a;
+      margin-bottom: 18px; line-height: 1;
+    }
+    .shade-opts { display: flex; gap: 10px; flex-wrap: nowrap; justify-content: center; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+    .shade-opt {
+      cursor: pointer; border-radius: 12px; overflow: hidden;
+      border: 2px solid var(--line); transition: border-color 0.15s, transform 0.15s;
+      width: 96px;
+    }
+    .shade-opt:hover { border-color: #333; transform: scale(1.05); }
+    .shade-opt-main {
+      width: 100%; aspect-ratio: 1/1; display: flex;
+      align-items: center; justify-content: center;
+      container-type: inline-size; container-name: shade-card;
+    }
+    @container shade-card (min-width: 1px) {
+      .logo-b s1 { font-size: 19cqw; }
+      .logo-b s2 { font-size: 19cqw; }
+      .logo-b s3 { font-size: 19cqw; }
+    }
+    .shade-opt-swatch { display: flex; height: 14px; }
+    .shade-modal-close {
+      width: 100%; padding: 10px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 10px; cursor: pointer; font-family: 'Montreal', sans-serif;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #666;
+    }
+    .shade-modal-close:hover { background: var(--line); }
+
+    /* ── LOCK BUTTON ── */
+    .lock-btn {
+      background: none; border: 1px solid var(--line); border-radius: 6px;
+      padding: 5px 9px; cursor: pointer; font-size: 13px;
+      transition: all 0.15s; color: #999; line-height: 1;
+    }
+    .lock-btn.locked { border-color: #ff2700; color: #ff2700; background: rgba(255,39,0,0.06); }
+    .lock-btn:hover { border-color: #888; }
+
+    /* ── SIMILAR BUTTON IN FORM ── */
+    .similar-btn {
+      font-size: 10px; font-family: 'Montreal', sans-serif; letter-spacing: 0.08em;
+      text-transform: uppercase; background: none; border: 1px solid var(--line);
+      border-radius: 6px; padding: 5px 9px; cursor: pointer; color: #777;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .similar-btn:hover { border-color: #555; color: #333; }
+
+    /* ── COLOR FAMILY FILTER ── */
+    .family-row { display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+    .family-label { font-size:10px; color:#999; font-family:'Montreal',sans-serif; letter-spacing:0.07em; text-transform:uppercase; white-space:nowrap; margin-right:2px; }
+    .family-btn {
+      font-size:10px; font-family:'Montreal',sans-serif; letter-spacing:0.07em; text-transform:uppercase;
+      border:1px solid var(--line); border-radius:20px; padding:4px 11px; cursor:pointer;
+      background:none; color:#666; transition:all 0.15s; white-space:nowrap;
+      display:inline-flex; align-items:center; gap:5px;
+    }
+    .family-btn .fc-dot { width:8px; height:8px; border-radius:50%; background:var(--fc,#888); flex-shrink:0; }
+    .family-btn:hover { border-color:#888; color:#333; }
+    .family-btn.active { background:var(--fc,#333); color:#fff; border-color:var(--fc,#333); }
+    .family-btn.active .fc-dot { background:#fff; opacity:0.7; }
+    .family-label-mix { color: #ff2700; font-weight: 600; }
+
+    /* ── HISTORY NAV BUTTONS ── */
+    .hist-btn {
+      font-size: 14px; background: none; border: 1px solid var(--line);
+      border-radius: 6px; padding: 5px 10px; cursor: pointer; color: #777;
+      transition: all 0.15s; line-height: 1;
+    }
+    .hist-btn:hover:not(:disabled) { border-color: #555; color: #333; }
+    .hist-btn:disabled { opacity: 0.3; cursor: default; }
+
+    /* ── SIMILAR BADGE ON CARD (top-left corner) ── */
+    .similar-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 10;
+      background: rgba(0,0,0,0.38); color: #fff; border: none;
+      border-radius: 8px; padding: 5px 11px;
+      font-size: 10px; font-family: 'Montreal', sans-serif;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.15s;
+      backdrop-filter: blur(3px); pointer-events: all;
+    }
+    .similar-badge:hover { background: rgba(0,0,0,0.62); }
 
     /* ── TOAST NOTIFICATION ── */
     #toast {
@@ -867,6 +973,7 @@
             <span class="hx">#</span>
           </div>
           <input type="text" id="fh1" value="000000" maxlength="6" style="width:80px; padding:8px 14px; background:#faf8f3; border:1px solid #c8c4b8; border-radius:8px; color:#333; font-family:monospace; font-size:12px;" placeholder="000000"/>
+          <button id="lock-c1" class="lock-btn" onclick="toggleLock('c1')" title="Zamknout barvu 1">🔓</button>
         </div>
       </div>
       <div class="ffield">
@@ -877,6 +984,7 @@
             <span class="hx">#</span>
           </div>
           <input type="text" id="fh2" value="ffffff" maxlength="6" style="width:80px; padding:8px 14px; background:#faf8f3; border:1px solid #c8c4b8; border-radius:8px; color:#333; font-family:monospace; font-size:12px;" placeholder="000000"/>
+          <button id="lock-c2" class="lock-btn" onclick="toggleLock('c2')" title="Zamknout barvu 2">🔓</button>
         </div>
       </div>
     </div>
@@ -901,10 +1009,33 @@
       </div>
     </div>
 
-    <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
-      <button class="random-btn" onclick="generateRandomCombo()" title="Vygenerovat náhodnou kombinaci barvy">🎲 Náhodná kombinace</button>
-      <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
+    <!-- Color family filter -->
+    <div class="family-row">
+      <span class="family-label">Rodina:</span>
+      <button class="family-btn active" data-family="all" style="--fc:#555" onclick="setColorFamily('all')"><span class="fc-dot"></span>Vše</button>
+      <button class="family-btn" data-family="red" style="--fc:#c03030" onclick="setColorFamily('red')"><span class="fc-dot"></span>Červená</button>
+      <button class="family-btn" data-family="orange" style="--fc:#d05820" onclick="setColorFamily('orange')"><span class="fc-dot"></span>Oranžová</button>
+      <button class="family-btn" data-family="yellow" style="--fc:#b89000" onclick="setColorFamily('yellow')"><span class="fc-dot"></span>Žlutá</button>
+      <button class="family-btn" data-family="green" style="--fc:#2e7d32" onclick="setColorFamily('green')"><span class="fc-dot"></span>Zelená</button>
+      <button class="family-btn" data-family="blue" style="--fc:#1a5fa0" onclick="setColorFamily('blue')"><span class="fc-dot"></span>Modrá</button>
+      <button class="family-btn" data-family="purple" style="--fc:#6a3ab0" onclick="setColorFamily('purple')"><span class="fc-dot"></span>Fialová</button>
+      <button class="family-btn" data-family="pink" style="--fc:#c0306a" onclick="setColorFamily('pink')"><span class="fc-dot"></span>Růžová</button>
+      <button class="family-btn" data-family="neutral" style="--fc:#888" onclick="setColorFamily('neutral')"><span class="fc-dot"></span>Neutrální</button>
     </div>
+
+    <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button id="hist-back" class="hist-btn" onclick="navigateHistory(-1)" title="Zpět" disabled>←</button>
+        <button id="hist-fwd"  class="hist-btn" onclick="navigateHistory(1)"  title="Vpřed" disabled>→</button>
+        <button class="random-btn" onclick="generateRandomCombo()" title="Vygenerovat náhodnou kombinaci barvy">🎲 Náhodná kombinace</button>
+        <button class="similar-btn" onclick="openShadeModal(document.getElementById('fc1').value, document.getElementById('fc2').value, lockedColors.c1, lockedColors.c2)">~ 5 odstínů</button>
+      </div>
+      <button class="submit-btn submit-in" onclick="submitCombo()">+ Přidat kombinaci</button>
+    </div>
+  </div>
+  <!-- Mobile-only submit button, sits outside the form box -->
+  <div class="submit-out-wrap">
+    <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
   </div>
 
 
@@ -1043,6 +1174,60 @@ function castVote(id, voter, type) {
   }
 }
 
+// ── COLOR NAMES ───────────────────────────────────────────────────
+function getColorName(hex) {
+  const [h, s, l] = hexToHsl(hex);
+  if (s < 10) {
+    if (l > 92) return 'Sníh';
+    if (l > 78) return 'Slonovinová';
+    if (l > 62) return 'Oblak';
+    if (l > 42) return 'Popel';
+    if (l > 20) return 'Břidlice';
+    return 'Noc';
+  }
+  if (s < 22 && l > 68) {
+    if (h > 20 && h < 55) return 'Pergamen';
+    return 'Písek';
+  }
+  if (h < 12 || h >= 342) {
+    if (l < 28) return 'Granát';
+    if (l < 48) return s > 65 ? 'Cihlová' : 'Kaštanová';
+    return s > 65 ? 'Mák' : 'Losos';
+  }
+  if (h < 22) return l < 42 ? 'Terakota' : 'Meruňka';
+  if (h < 38) return l < 38 ? 'Rezavá' : s > 55 ? 'Dýně' : 'Skořice';
+  if (h < 52) return s > 55 ? 'Jantarová' : l > 65 ? 'Máslo' : 'Karamel';
+  if (h < 68) return s > 55 ? 'Sluneční' : l > 72 ? 'Vanilka' : 'Zlatavá';
+  if (h < 82) return l < 38 ? 'Mechová' : 'Citronová';
+  if (h < 152) {
+    if (l < 22) return 'Jehličí';
+    if (l < 42) return s < 28 ? 'Olivová' : 'Lesní';
+    return s < 28 ? 'Šalvějová' : 'Jarní';
+  }
+  if (h < 182) return l < 38 ? 'Mořská' : 'Tyrkys';
+  if (h < 202) return l < 32 ? 'Hlubina' : 'Aqua';
+  if (h < 225) return l < 28 ? 'Tmavomodrá' : l > 68 ? 'Nebeská' : 'Azurová';
+  if (h < 252) return l < 28 ? 'Námořnická' : l > 68 ? 'Ledová' : 'Kobaltová';
+  if (h < 272) return l < 32 ? 'Půlnoční' : 'Levandulová';
+  if (h < 295) return l < 32 ? 'Švestková' : 'Fialová';
+  if (h < 322) return l < 38 ? 'Vínová' : s > 55 ? 'Orchidej' : 'Lila';
+  return l < 38 ? 'Malinová' : 'Růžová';
+}
+
+function copyHex(el, hex) {
+  const value = hex.replace('#', '');
+  navigator.clipboard.writeText(value).then(() => {
+    el.classList.add('copied');
+    const span = el.querySelector('.ch-hex');
+    const orig = span.textContent;
+    span.textContent = '✓ Zkopírováno';
+    setTimeout(() => {
+      el.classList.remove('copied');
+      span.textContent = orig;
+    }, 1500);
+  });
+}
+
 // ── RENDER ────────────────────────────────────────────────────────
 function comboHTML(id, d) {
   const c1 = d.color1 || '#FF2D00';
@@ -1056,6 +1241,7 @@ function comboHTML(id, d) {
   const downvotersHTML = dv.length ? dv.map(x=>`<b>${x}</b>`).join(', ') : '';
 
   return `<div class="combo ${d.official?'official':''}" id="cb-${id}">
+    <button class="similar-badge" onclick="openShadeModal('${c1}','${c2}')">~ Podobné</button>
     <div class="combo-main" style="background:${c1}">
       <div class="logo-b" style="color:${c2}">
         <s1>1981</s1><s2>RUN</s2><s3>CLUB</s3>
@@ -1078,12 +1264,18 @@ function comboHTML(id, d) {
     <div class="combo-foot">
       <div class="foot-top">
         <div>
-          <div class="combo-name-line">${c1.toUpperCase()} + ${c2.toUpperCase()}</div>
+          <div class="combo-name-line">${getColorName(c1)} & ${getColorName(c2)}</div>
           ${byLine}
         </div>
         <div class="chips">
-          <div class="ch"><div class="ch-dot" style="background:${c1}"></div><span class="ch-hex">${c1.toUpperCase()}</span></div>
-          <div class="ch"><div class="ch-dot" style="background:${c2};border:1px solid rgba(255,255,255,0.12)"></div><span class="ch-hex">${c2.toUpperCase()}</span></div>
+          <div class="ch" onclick="copyHex(this,'${c1.toUpperCase()}')" title="Zkopírovat hex">
+            <div class="ch-dot" style="background:${c1}"></div>
+            <span class="ch-hex">${c1.toUpperCase()}</span>
+          </div>
+          <div class="ch" onclick="copyHex(this,'${c2.toUpperCase()}')" title="Zkopírovat hex">
+            <div class="ch-dot" style="background:${c2};border:1px solid rgba(0,0,0,0.12)"></div>
+            <span class="ch-hex">${c2.toUpperCase()}</span>
+          </div>
         </div>
       </div>
       <div class="vote-row">
@@ -1326,6 +1518,225 @@ function submitCombo() {
   showToast('✓ Kombinace přidána!');
 }
 
+// ── COLOR UTILS ────────────────────────────────────────────────────
+function hexToHsl(hex) {
+  let r = parseInt(hex.slice(1,3),16)/255;
+  let g = parseInt(hex.slice(3,5),16)/255;
+  let b = parseInt(hex.slice(5,7),16)/255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if (max===min) { h=s=0; } else {
+    const d=max-min;
+    s = l>0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max){
+      case r: h=((g-b)/d+(g<b?6:0))/6; break;
+      case g: h=((b-r)/d+2)/6; break;
+      case b: h=((r-g)/d+4)/6; break;
+    }
+  }
+  return [h*360, s*100, l*100];
+}
+
+function generateShades(hex1, hex2, lock1, lock2) {
+  const [h1,s1,l1] = hexToHsl(hex1);
+  const [h2,s2,l2] = hexToHsl(hex2);
+  const cl = (v,a,b) => Math.max(a, Math.min(b, v));
+  const vars1 = lock1 ? [hex1,hex1,hex1,hex1,hex1] : [
+    hex1,
+    hslToHex(h1, cl(s1+4,5,95), cl(l1+7,5,92)),
+    hslToHex(h1, cl(s1-4,5,95), cl(l1-7,5,92)),
+    hslToHex((h1+10)%360, s1, l1),
+    hslToHex((h1-10+360)%360, s1, l1),
+  ];
+  const vars2 = lock2 ? [hex2,hex2,hex2,hex2,hex2] : [
+    hex2,
+    hslToHex(h2, cl(s2-3,5,95), cl(l2-7,5,92)),
+    hslToHex(h2, cl(s2+3,5,95), cl(l2+7,5,92)),
+    hslToHex((h2+10)%360, s2, l2),
+    hslToHex((h2-10+360)%360, s2, l2),
+  ];
+  const pairs = vars1.map((c1, i) => [c1, vars2[i]]);
+  // Sort from lightest background to darkest
+  pairs.sort((a, b) => hexToHsl(b[0])[2] - hexToHsl(a[0])[2]);
+  return pairs;
+}
+
+// ── SHADE MODAL ────────────────────────────────────────────────────
+function openShadeModal(hex1, hex2, lock1, lock2) {
+  const shades = generateShades(hex1, hex2, lock1||false, lock2||false);
+  document.getElementById('shade-opts').innerHTML = shades.map(([c1,c2]) => `
+    <div class="shade-opt" onclick="applyShade('${c1}','${c2}')">
+      <div class="shade-opt-main" style="background:${c1}">
+        <div class="logo-b" style="color:${c2}"><s1>1981</s1><s2>RUN</s2><s3>CLUB</s3></div>
+      </div>
+      <div class="shade-opt-swatch">
+        <div style="flex:1;background:${c1}"></div>
+        <div style="flex:1;background:${c2}"></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('shade-modal').classList.add('active');
+}
+
+function closeShadeModal() {
+  document.getElementById('shade-modal').classList.remove('active');
+}
+
+// ── ESC KEY — close any active modal ──────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  // Shade picker modal
+  if (document.getElementById('shade-modal').classList.contains('active')) {
+    closeShadeModal();
+    return;
+  }
+  // Name modal (only closeable when editing an existing name)
+  const nameModal = document.getElementById('nameModal');
+  if (nameModal && nameModal.classList.contains('active')) {
+    const card = nameModal.querySelector('.modal-card');
+    if (card && card.classList.contains('has-saved-name')) {
+      nameModal.classList.remove('active');
+      document.getElementById('modalNameInput').value = '';
+    }
+  }
+});
+
+function applyShade(hex1, hex2) {
+  document.getElementById('fc1').value = hex1;
+  document.getElementById('fh1').value = hex1.substring(1).toUpperCase();
+  document.getElementById('fc2').value = hex2;
+  document.getElementById('fh2').value = hex2.substring(1).toUpperCase();
+  updateFP(hex1, hex2);
+  pushHistory(hex1, hex2);
+  closeShadeModal();
+  document.querySelector('.add-sec').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── COLOR HISTORY ─────────────────────────────────────────────────
+const colorHistory = [];
+let historyIdx = -1;
+
+function pushHistory(hex1, hex2) {
+  // Truncate forward history
+  colorHistory.splice(historyIdx + 1);
+  colorHistory.push({ hex1, hex2 });
+  // Keep max 5
+  if (colorHistory.length > 5) colorHistory.shift();
+  historyIdx = colorHistory.length - 1;
+  updateHistoryBtns();
+}
+
+function updateHistoryBtns() {
+  const btnBack = document.getElementById('hist-back');
+  const btnFwd  = document.getElementById('hist-fwd');
+  if (btnBack) btnBack.disabled = historyIdx <= 0;
+  if (btnFwd)  btnFwd.disabled  = historyIdx >= colorHistory.length - 1;
+}
+
+function navigateHistory(dir) {
+  historyIdx += dir;
+  if (historyIdx < 0) historyIdx = 0;
+  if (historyIdx >= colorHistory.length) historyIdx = colorHistory.length - 1;
+  const { hex1, hex2 } = colorHistory[historyIdx];
+  applyColorsToForm(hex1, hex2);
+  updateHistoryBtns();
+}
+
+function applyColorsToForm(hex1, hex2) {
+  document.getElementById('fc1').value = hex1;
+  document.getElementById('fh1').value = hex1.substring(1).toUpperCase();
+  document.getElementById('fc2').value = hex2;
+  document.getElementById('fh2').value = hex2.substring(1).toUpperCase();
+  updateFP(hex1, hex2);
+}
+
+// ── COLOR FAMILY FILTER ────────────────────────────────────────────
+let selectedFamilies = ['all'];  // max 2; 'all' means no filter
+const generatedHistory = [];     // ordered list of hex1+hex2 keys, newest last
+
+const familyPalettes = {
+  all: [
+    { h: 30, s: 45, l: 65 }, { h: 15, s: 55, l: 60 }, { h: 25, s: 65, l: 55 },
+    { h: 90, s: 35, l: 50 }, { h: 200, s: 30, l: 55 }, { h: 40, s: 25, l: 75 },
+    { h: 0,  s: 0,  l: 85 }, { h: 220, s: 65, l: 35 }, { h: 120, s: 50, l: 35 },
+    { h: 350, s: 60, l: 40 }, { h: 15, s: 70, l: 45 }, { h: 0, s: 5, l: 50 },
+    { h: 200, s: 40, l: 45 }, { h: 270, s: 40, l: 50 }, { h: 50, s: 70, l: 50 },
+  ],
+  red:     [
+    { h: 0,   s: 70, l: 40 }, { h: 350, s: 65, l: 38 }, { h: 5,   s: 75, l: 45 },
+    { h: 358, s: 80, l: 35 }, { h: 8,   s: 60, l: 50 }, { h: 345, s: 55, l: 42 },
+  ],
+  orange:  [
+    { h: 20,  s: 75, l: 50 }, { h: 15,  s: 70, l: 45 }, { h: 28,  s: 80, l: 48 },
+    { h: 22,  s: 65, l: 55 }, { h: 12,  s: 72, l: 43 }, { h: 32,  s: 68, l: 52 },
+  ],
+  yellow:  [
+    { h: 45,  s: 80, l: 50 }, { h: 50,  s: 75, l: 48 }, { h: 42,  s: 70, l: 55 },
+    { h: 55,  s: 85, l: 45 }, { h: 48,  s: 65, l: 58 }, { h: 38,  s: 78, l: 52 },
+  ],
+  green:   [
+    { h: 120, s: 50, l: 35 }, { h: 90,  s: 40, l: 42 }, { h: 140, s: 55, l: 38 },
+    { h: 100, s: 35, l: 48 }, { h: 155, s: 45, l: 32 }, { h: 80,  s: 50, l: 40 },
+  ],
+  blue:    [
+    { h: 220, s: 65, l: 35 }, { h: 200, s: 55, l: 42 }, { h: 210, s: 60, l: 38 },
+    { h: 240, s: 50, l: 40 }, { h: 195, s: 70, l: 36 }, { h: 228, s: 55, l: 44 },
+  ],
+  purple:  [
+    { h: 270, s: 50, l: 40 }, { h: 280, s: 45, l: 44 }, { h: 260, s: 55, l: 36 },
+    { h: 290, s: 40, l: 42 }, { h: 265, s: 60, l: 38 }, { h: 275, s: 48, l: 46 },
+  ],
+  pink:    [
+    { h: 330, s: 60, l: 52 }, { h: 340, s: 65, l: 58 }, { h: 320, s: 55, l: 50 },
+    { h: 348, s: 70, l: 55 }, { h: 315, s: 50, l: 54 }, { h: 335, s: 62, l: 48 },
+  ],
+  neutral: [
+    { h: 30,  s: 15, l: 70 }, { h: 0,   s: 0,  l: 50 }, { h: 40,  s: 20, l: 78 },
+    { h: 25,  s: 12, l: 85 }, { h: 20,  s: 10, l: 60 }, { h: 0,   s: 5,  l: 40 },
+  ],
+};
+
+function setColorFamily(family) {
+  if (family === 'all') {
+    selectedFamilies = ['all'];
+  } else {
+    // Remove 'all' when a specific family is picked
+    selectedFamilies = selectedFamilies.filter(f => f !== 'all');
+    const idx = selectedFamilies.indexOf(family);
+    if (idx >= 0) {
+      // Toggle off
+      selectedFamilies.splice(idx, 1);
+    } else {
+      // Add – cap at 2 (drop the oldest if already 2)
+      if (selectedFamilies.length >= 2) selectedFamilies.shift();
+      selectedFamilies.push(family);
+    }
+    // Nothing left → fall back to 'all'
+    if (selectedFamilies.length === 0) selectedFamilies = ['all'];
+  }
+  generatedHistory.length = 0;
+  document.querySelectorAll('.family-btn').forEach(b =>
+    b.classList.toggle('active', selectedFamilies.includes(b.dataset.family))
+  );
+  // Update label to hint when mixing
+  const lbl = document.querySelector('.family-label');
+  if (lbl) {
+    const isMix = selectedFamilies.length === 2 && !selectedFamilies.includes('all');
+    lbl.textContent = isMix ? 'Mix:' : 'Rodina:';
+    lbl.classList.toggle('family-label-mix', isMix);
+  }
+  generateRandomCombo();
+}
+
+// ── LOCK COLORS ────────────────────────────────────────────────────
+const lockedColors = { c1: false, c2: false };
+
+function toggleLock(which) {
+  lockedColors[which] = !lockedColors[which];
+  const btn = document.getElementById('lock-' + which);
+  btn.textContent = lockedColors[which] ? '🔒' : '🔓';
+  btn.classList.toggle('locked', lockedColors[which]);
+}
+
 // ── RANDOM COLOR GENERATOR ─────────────────────────────────────────
 function hslToHex(h, s, l) {
   s /= 100;
@@ -1340,63 +1751,74 @@ function hslToHex(h, s, l) {
 }
 
 function generateRandomCombo() {
-  // Curated palette pools for 1981 Run Club aesthetic
-  const palettes = [
-    // Earthy/muted tones
-    { h: 30, s: 45, l: 65 },   // Warm beige
-    { h: 15, s: 55, l: 60 },   // Terracotta
-    { h: 25, s: 65, l: 55 },   // Burnt orange
-    { h: 90, s: 35, l: 50 },   // Olive green
-    { h: 200, s: 30, l: 55 },  // Dusty blue
-    { h: 40, s: 25, l: 75 },   // Cream
-    { h: 0, s: 0, l: 85 },     // Off-white
-    // Rich but not neon
-    { h: 220, s: 65, l: 35 },  // Deep navy
-    { h: 120, s: 50, l: 35 },  // Forest green
-    { h: 350, s: 60, l: 40 },  // Burgundy
-    { h: 15, s: 70, l: 45 },   // Rust
-    { h: 0, s: 5, l: 50 },     // Warm grey
-    { h: 200, s: 40, l: 45 },  // Ocean blue
-    { h: 270, s: 40, l: 50 },  // Mauve
-    { h: 50, s: 70, l: 50 },   // Golden
-  ];
+  // Resolve palettes from selected families
+  const isMix = selectedFamilies.length === 2 && !selectedFamilies.includes('all');
+  const palettes1 = isMix
+    ? familyPalettes[selectedFamilies[0]]
+    : (familyPalettes[selectedFamilies[0]] || familyPalettes.all);
+  const palettes2 = isMix ? familyPalettes[selectedFamilies[1]] : null;
 
-  // Helper to get complementary/contrasting color
+  // Helper to get complementary/contrasting color (used in single-family mode)
   function getContrast(h, s, l) {
     const options = [
-      // Light neutral/cream
       { h: 40, s: 25, l: 75 },
-      // Complementary hue (opposite on color wheel)
       { h: (h + 180) % 360, s: Math.max(s - 15, 20), l: Math.min(l + 15, 75) },
-      // Analogous contrast
       { h: (h + 60) % 360, s: s - 20, l: 65 },
-      // Light version of complementary
       { h: (h + 180) % 360, s: 30, l: 70 },
-      // Off-white
       { h: 0, s: 0, l: 85 },
     ];
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  // Pick random primary color, ensure secondary is always different
-  const primary = palettes[Math.floor(Math.random() * palettes.length)];
-  let secondary, hex1, hex2;
+  function nudge(base, i, factor) {
+    const shift = (i - 7) * factor;
+    return { h: (base.h + shift + 360) % 360, s: base.s, l: Math.max(25, Math.min(80, base.l + (i % 2 === 0 ? 8 : -8))) };
+  }
+
+  // Pick random combo, avoid identical pair and any already-seen combo
+  const maxHistory = Math.max(palettes1.length * (palettes2 ? palettes2.length : 5), 12);
+  let hex1, hex2;
   let attempts = 0;
   do {
-    secondary = getContrast(primary.h, primary.s, primary.l);
-    hex1 = hslToHex(primary.h, primary.s, primary.l);
-    hex2 = hslToHex(secondary.h, secondary.s, secondary.l);
+    let base1 = palettes1[Math.floor(Math.random() * palettes1.length)];
+    if (attempts >= 8) base1 = nudge(base1, attempts, 13);
+
+    if (isMix) {
+      // Mix mode: secondary comes straight from the second family palette
+      let base2 = palettes2[Math.floor(Math.random() * palettes2.length)];
+      if (attempts >= 8) base2 = nudge(base2, attempts, 11);
+      hex1 = hslToHex(base1.h, base1.s, base1.l);
+      hex2 = hslToHex(base2.h, base2.s, base2.l);
+    } else {
+      const secondary = getContrast(base1.h, base1.s, base1.l);
+      hex1 = hslToHex(base1.h, base1.s, base1.l);
+      hex2 = hslToHex(secondary.h, secondary.s, secondary.l);
+    }
     attempts++;
-  } while (hex1 === hex2 && attempts < 10);
+  } while (attempts < 25 && (hex1 === hex2 || generatedHistory.includes(hex1 + hex2)));
+
+  // Respect locked colors
+  if (lockedColors.c1) hex1 = document.getElementById('fc1').value;
+  if (lockedColors.c2) hex2 = document.getElementById('fc2').value;
 
   // Apply to form
-  document.getElementById('fc1').value = hex1;
-  document.getElementById('fh1').value = hex1.substring(1).toUpperCase();
-  document.getElementById('fc2').value = hex2;
-  document.getElementById('fh2').value = hex2.substring(1).toUpperCase();
+  if (!lockedColors.c1) {
+    document.getElementById('fc1').value = hex1;
+    document.getElementById('fh1').value = hex1.substring(1).toUpperCase();
+  }
+  if (!lockedColors.c2) {
+    document.getElementById('fc2').value = hex2;
+    document.getElementById('fh2').value = hex2.substring(1).toUpperCase();
+  }
 
   // Update preview
-  updateFP(hex1, hex2);
+  const final1 = document.getElementById('fc1').value;
+  const final2 = document.getElementById('fc2').value;
+  // Record in history, cap at maxHistory
+  generatedHistory.push(final1 + final2);
+  if (generatedHistory.length > maxHistory) generatedHistory.shift();
+  updateFP(final1, final2);
+  pushHistory(final1, final2);
 }
 
 // ── DELETE ─────────────────────────────────────────────────────────
@@ -1793,6 +2215,15 @@ function renderTop3(all) {
 <div id="worst5-bar" style="margin: 0 0 20px; padding: 32px 0 32px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align:center;">
   <h2 style="font-family:'Beastly',serif; font-size:36px; color:#888; line-height:1; margin-bottom:20px; letter-spacing:0.5px;">NEJHORSICH 5</h2>
   <div id="worst5-icons" style="display:flex; justify-content:center; gap:16px; align-items:flex-end; flex-wrap:wrap;"></div>
+</div>
+
+<!-- ── SHADE PICKER MODAL ── -->
+<div id="shade-modal" class="shade-modal" onclick="if(event.target===this)closeShadeModal()">
+  <div class="shade-modal-inner">
+    <div class="shade-modal-title">Vyberte odstin</div>
+    <div id="shade-opts" class="shade-opts"></div>
+    <button class="shade-modal-close" onclick="closeShadeModal()">Zavřít</button>
+  </div>
 </div>
 
 <!-- ── PUMA FOOTER ── -->
