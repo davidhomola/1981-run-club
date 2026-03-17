@@ -295,8 +295,11 @@
     }
     .vbtn:hover { background: rgba(0,0,0,0.08); color: #333; transform: scale(1.03); }
     .vbtn.voted { background: rgba(255,200,40,0.11); border-color: rgba(255,200,40,0.28); color: #d4ac28; }
-    .vbtn.own-combo { opacity: 0.35; cursor: not-allowed; }
+    .vbtn.own-combo { cursor: not-allowed; border-style: dashed; }
     .vbtn.own-combo:hover { background: none; transform: none; }
+    .vbtn.own-combo .em { opacity: 0.3; }
+    .vbtn.own-combo > span:not(.em) { opacity: 0.3; }
+    .vbtn.own-combo .vlist { opacity: 1; }
     .vbtn .em { font-size: 16px; transition: transform 0.2s; }
     .vbtn.voted .em { transform: scale(1.22) rotate(-8deg); }
     .vlist {
@@ -822,6 +825,7 @@
 <div class="admin-bar">
   <button id="changeNameBtn" class="change-name-btn">Změnit jméno</button>
   <button id="deleteAllBtn" class="change-name-btn" onclick="handleDeleteAll()">🗑 Smazat přidané</button>
+  <button class="change-name-btn" onclick="handleCleanSelfVotes()">🧹 Vyčistit vlastní hlasy</button>
   <button id="resetBtn" class="change-name-btn" onclick="handleReset()">↺ Reset stránky</button>
 </div>
 
@@ -1568,6 +1572,63 @@ function showMotherlode() {
   const name = localStorage.getItem('1981rc_username') || 'kamaráde';
   document.getElementById('mlode-msg').textContent = 'Dobrý pokus, ' + name + '! 😄';
   document.getElementById('motherlodeModal').classList.add('active');
+}
+
+function handleCleanSelfVotes() {
+  const pwd = prompt('Heslo pro vyčištění vlastních hlasů:');
+  if (!pwd) return;
+  if (pwd.toLowerCase() === 'motherlode') { showMotherlode(); return; }
+  if (pwd !== '1981admin') { alert('Špatné heslo!'); return; }
+  if (!confirm('Odstranit všechny hlasy kde autor hlasoval na vlastní návrh?')) return;
+
+  const toArr = v => !v ? [] : Array.isArray(v) ? v : Object.values(v);
+
+  if (db) {
+    db.ref('/combos').once('value', snap => {
+      const all = snap.val() || {};
+      let cleaned = 0;
+      Object.entries(all).forEach(([id, data]) => {
+        const owner = data.submittedBy || data.name;
+        if (!owner) return;
+        const voters     = toArr(data.voters);
+        const downvoters = toArr(data.downvoters);
+        const upIdx   = voters.indexOf(owner);
+        const downIdx = downvoters.indexOf(owner);
+        if (upIdx >= 0 || downIdx >= 0) {
+          const updates = {};
+          if (upIdx >= 0) {
+            voters.splice(upIdx, 1);
+            updates.voters    = voters;
+            updates.voteCount = Math.max(0, (data.voteCount || 0) - 1);
+          }
+          if (downIdx >= 0) {
+            downvoters.splice(downIdx, 1);
+            updates.downvoters    = downvoters;
+            updates.downvoteCount = Math.max(0, (data.downvoteCount || 0) - 1);
+          }
+          db.ref('/combos/' + id).update(updates);
+          cleaned++;
+        }
+      });
+      alert(cleaned > 0 ? `Vyčištěno ${cleaned} kombinací.` : 'Žádné vlastní hlasy nenalezeny.');
+    });
+  } else {
+    const d = lsLoad();
+    let cleaned = 0;
+    Object.entries(d).forEach(([id, data]) => {
+      const owner = data.submittedBy || data.name;
+      if (!owner) return;
+      const voters     = toArr(data.voters);
+      const downvoters = toArr(data.downvoters);
+      const upIdx   = voters.indexOf(owner);
+      const downIdx = downvoters.indexOf(owner);
+      if (upIdx >= 0) { voters.splice(upIdx, 1); data.voteCount = Math.max(0, (data.voteCount||0)-1); cleaned++; }
+      if (downIdx >= 0) { downvoters.splice(downIdx, 1); data.downvoteCount = Math.max(0, (data.downvoteCount||0)-1); cleaned++; }
+      data.voters = voters; data.downvoters = downvoters;
+    });
+    lsSave(d);
+    alert(cleaned > 0 ? `Vyčištěno ${cleaned} kombinací.` : 'Žádné vlastní hlasy nenalezeny.');
+  }
 }
 
 function handleDeleteAll() {
