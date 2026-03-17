@@ -93,9 +93,10 @@
     /* ── COMBO BLOCK ── */
     .combo {
       border-radius: 20px;
-      overflow: hidden;
+      overflow: visible;
       border: 1px solid var(--line);
       margin-bottom: 32px;
+      position: relative;
     }
     .combo.official { border-color: rgba(255,45,0,0.25); }
 
@@ -103,6 +104,8 @@
     .combo-main {
       width: 100%;
       aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 18px 18px 0 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -265,13 +268,17 @@
       color: #fff;
       padding: 6px 10px;
       border-radius: 6px;
-      white-space: nowrap;
+      white-space: normal;
+      word-break: break-word;
+      max-width: 220px;
+      width: max-content;
       z-index: 100;
       bottom: 100%;
       left: 50%;
       transform: translateX(-50%);
       margin-bottom: 8px;
       font-size: 12px;
+      text-align: center;
     }
     .vbtn:hover .vlist { display: block; }
     .vlist b { color: #fff; font-weight: 600; }
@@ -395,19 +402,21 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--cream);
-      color: #111;
+      background: #ff2700;
+      color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 12px 28px;
-      font-size: 11px;
+      padding: 14px 36px;
+      font-size: 13px;
       font-family: 'Montreal', sans-serif;
+      font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.15s, transform 0.15s;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(255,39,0,0.25);
     }
-    .submit-btn:hover { background: #dddad0; transform: scale(1.03); }
+    .submit-btn:hover { background: #e02000; transform: scale(1.04); box-shadow: 0 6px 20px rgba(255,39,0,0.35); }
 
     .random-btn {
       display: inline-flex;
@@ -487,6 +496,30 @@
     .mlode-card h2 { font-family:'Beastly',serif; font-size:28px; color:#4be84b; margin-bottom:8px; }
     .mlode-card p { font-size:14px; color:#ccc; margin-bottom:20px; }
     .mlode-close { background:#4be84b; color:#000; border:none; border-radius:20px; padding:10px 28px; font-size:13px; cursor:pointer; font-family:'Montreal',sans-serif; letter-spacing:0.08em; }
+
+    /* ── TOAST NOTIFICATION ── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a1a1a;
+      color: #f1efe4;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: 'Montreal', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      border: 1px solid #444;
+      z-index: 99998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
     /* ── WELCOME NAME MODAL ── */
     .modal-overlay {
@@ -804,9 +837,9 @@
       </div>
     </div>
 
-    <div style="display: flex; gap: 12px; align-items: center;">
+    <div style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+      <button class="random-btn" onclick="generateRandomCombo()" title="Vygenerovat náhodnou kombinaci barvy">🎲 Náhodná kombinace</button>
       <button class="submit-btn" onclick="submitCombo()">+ Přidat kombinaci</button>
-      <button class="random-btn" onclick="generateRandomCombo()" title="Vygenerovat náhodnou kombinaci barvy">🎲 Nahodna kombinace</button>
     </div>
   </div>
 
@@ -1004,8 +1037,8 @@ function comboHTML(id, d) {
 }
 
 function renderEntry(id, data) {
-  if (rendered[id]) { updateVoteUI(id, data.voteCount||0, data.voters||[], data.downvoteCount||0, data.downvoters||[]); displayComments(id, data.comments); return; }
-  rendered[id] = true;
+  rendered[id] = data;
+  if (document.getElementById('cb-' + id)) { updateVoteUI(id, data.voteCount||0, data.voters||[], data.downvoteCount||0, data.downvoters||[]); displayComments(id, data.comments); return; }
   const h = comboHTML(id, data);
   if (data.official) {
     const slot = document.getElementById('official-slot');
@@ -1191,12 +1224,13 @@ function submitCombo() {
   }
   pushEntry({ color1: document.getElementById('fc1').value,
               color2: document.getElementById('fc2').value,
-              name, voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:false, timestamp: Date.now() });
+              name, submittedBy: name, voteCount:0, voters:[], downvoteCount:0, downvoters:[], official:false, timestamp: Date.now() });
   document.getElementById('fc1').value = '#1D5FCC';
   document.getElementById('fc2').value = '#F5F5F0';
   document.getElementById('fh1').textContent = '#1D5FCC';
   document.getElementById('fh2').textContent = '#F5F5F0';
   updateFP('#1D5FCC','#F5F5F0');
+  showToast('✓ Kombinace přidána!');
 }
 
 // ── RANDOM COLOR GENERATOR ─────────────────────────────────────────
@@ -1272,7 +1306,8 @@ function generateRandomCombo() {
 function handleDelete(id) {
   const currentUser = localStorage.getItem('1981rc_username');
   const comboData = rendered[id];
-  const isOwner = currentUser && comboData && comboData.submittedBy === currentUser;
+  const submitter = comboData && (comboData.submittedBy || comboData.name);
+  const isOwner = currentUser && submitter && submitter === currentUser;
   const isOfficial = comboData && comboData.official === true;
   
   // If owner and not official, delete immediately with simple confirm
@@ -1367,7 +1402,7 @@ function displayComments(id, comments) {
         <b>${author}:</b>
         <span>${text}</span>
       </div>
-      <button class="delete-comment-btn" onclick="deleteComment('${id}', ${idx}, ${isOwner})" title="Smazat komentář">×</button>
+      <button class="delete-comment-btn" onclick="deleteComment('${id}', ${idx}, ${isOwner ? 'true' : 'false'})" title="Smazat komentář">×</button>
     </div>`;
   }).join('');
 }
@@ -1397,8 +1432,7 @@ function performCommentDelete(id, idx) {
         comments = Object.values(comments);
       }
       // Remove the comment at index - we need to find the actual index in the newest 5
-      const newest = comments.slice(-5);
-      const actualIndex = comments.length - 5 + idx;
+      const actualIndex = Math.max(0, comments.length - 5) + idx;
       if (actualIndex >= 0 && actualIndex < comments.length) {
         comments.splice(actualIndex, 1);
         db.ref('/combos/' + id + '/comments').set(comments);
@@ -1409,8 +1443,7 @@ function performCommentDelete(id, idx) {
     // LocalStorage fallback
     const d = lsLoad();
     if (d[id] && d[id].comments && Array.isArray(d[id].comments)) {
-      const newest = d[id].comments.slice(-5);
-      const actualIndex = d[id].comments.length - 5 + idx;
+      const actualIndex = Math.max(0, d[id].comments.length - 5) + idx;
       if (actualIndex >= 0 && actualIndex < d[id].comments.length) {
         d[id].comments.splice(actualIndex, 1);
         lsSave(d);
@@ -1424,6 +1457,17 @@ function loadCommentsForCombo(id, comments) {
   setTimeout(() => {
     displayComments(id, comments);
   }, 100);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
 // ── DELETE ALL / RESET ───────────────────────────────────────────
@@ -1517,6 +1561,9 @@ function renderTop3(all) {
     </div>`).join('');
 }
 </script>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
 
 <!-- ── MOTHERLODE MODAL ── -->
 <div id="motherlodeModal">
