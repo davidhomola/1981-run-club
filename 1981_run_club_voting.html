@@ -713,7 +713,17 @@
     @media (max-width: 600px) {
       .modal-card { padding: 40px 30px; }
       .modal-heading { font-size: 28px; }
-      .admin-bar { flex-direction: column; }
+      .admin-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 8px 20px;
+        margin-top: -28px;
+        gap: 8px;
+      }
+      .change-name-btn {
+        font-size: 10px;
+        padding: 6px 10px;
+      }
     }
 
     .comment-section {
