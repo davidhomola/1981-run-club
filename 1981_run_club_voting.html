@@ -36,18 +36,30 @@
     }
 
     /* ── 3-COLUMN GRID ON DESKTOP ── */
-    #comm-grid, #official-slot {
+    #comm-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 28px;
       align-items: start;
     }
+
+    /* ── OFFICIAL — 2 columns, same width as generator ── */
+    #official-slot {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      align-items: start;
+      max-width: 66.6%;
+      margin: 0 auto;
+    }
+
     @media (max-width: 900px) {
       #comm-grid, #official-slot {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 24px;
+        max-width: 100%;
       }
-      .combo { margin-bottom: 32px; }
+      .combo { margin-bottom: 0; }
     }
 
     /* ── HEADER ── */
@@ -64,7 +76,7 @@
     header h1 {
       font-family: 'Beastly', serif;
       font-size: 50px;
-      color: #ff2700;
+      color: #1a1a1a;
       letter-spacing: 1px;
       line-height: 1;
     }
@@ -112,6 +124,16 @@
       border: 1px solid var(--line);
       margin-bottom: 0;
       position: relative;
+    }
+    .medal-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 28px;
+      line-height: 1;
+      z-index: 10;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+      pointer-events: none;
     }
     .combo.official { border-color: rgba(255,45,0,0.25); }
 
@@ -210,6 +232,7 @@
       padding: 18px 22px 22px;
       border-top: 1px solid rgba(0,0,0,0.07);
       background: var(--card);
+      border-radius: 0 0 20px 20px;
     }
     .foot-top {
       display: flex;
@@ -318,35 +341,38 @@
 
     /* ── ADD SECTION ── */
     .add-sec {
-      margin-top: 76px;
-      padding-top: 52px;
+      margin-top: 40px;
+      padding-top: 28px;
       border-top: 1px solid #1a1a1a;
+      max-width: 66.6%;
+      margin-left: auto;
+      margin-right: auto;
     }
     .add-sec h2 {
       font-family: 'Beastly', serif;
-      font-size: 64px;
-      color: #ff2700;
-      margin-bottom: 6px;
+      font-size: 30px;
+      color: #1a1a1a;
+      margin-bottom: 2px;
     }
-    .add-sec > p { font-size: 13px; color: #404040; margin-bottom: 36px; letter-spacing: 0.04em; }
+    .add-sec > p { font-size: 12px; color: #404040; margin-bottom: 14px; letter-spacing: 0.04em; }
 
     .add-form {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 30px 32px 34px;
+      border-radius: 16px;
+      padding: 16px 20px 18px;
       max-width: 100%;
     }
-    .frow { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-    .ffield { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 150px; }
-    .ffield label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #404040; }
+    .frow { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .ffield { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
+    .ffield label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: #404040; }
     .ffield input[type="text"] {
       background: #faf8f3;
       border: 1px solid #c8c4b8;
-      border-radius: 10px;
-      padding: 11px 14px;
+      border-radius: 8px;
+      padding: 8px 11px;
       color: #1a1a1a;
-      font-size: 14px;
+      font-size: 13px;
       font-family: 'Montreal', sans-serif;
       outline: none;
       transition: border-color 0.15s;
@@ -356,28 +382,32 @@
     .cw {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: #faf8f3;
       border: 1px solid #c8c4b8;
-      border-radius: 10px;
-      padding: 8px 14px;
+      border-radius: 8px;
+      padding: 6px 11px;
       cursor: pointer;
       transition: border-color 0.15s;
     }
     .cw:focus-within { border-color: #999; }
-    .cw input[type="color"] { width: 28px; height: 28px; border: none; outline: none; border-radius: 50%; padding: 0; cursor: pointer; background: none; }
-    .hx { font-size: 12px; font-family: monospace; color: #888; }
+    .cw input[type="color"] { width: 24px; height: 24px; border: none; outline: none; border-radius: 50%; padding: 0; cursor: pointer; background: none; }
+    .hx { font-size: 11px; font-family: monospace; color: #888; }
+
+    @media (max-width: 900px) {
+      .add-sec { max-width: 100%; }
+    }
 
     /* Form preview — 4-variant mini combo */
     .fp-wrap {
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       border: 1px solid #d0cdc2;
     }
     .fp-main {
       width: 100%;
-      aspect-ratio: 2 / 1;
+      aspect-ratio: 3 / 1;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -385,16 +415,16 @@
       container-name: fp-main-card;
     }
     @container fp-main-card (min-width: 1px) {
-      .logo-b s1 { font-size: 11.4cqw; }
-      .logo-b s2 { font-size: 11.4cqw; }
-      .logo-b s3 { font-size: 11.4cqw; }
+      .logo-b s1 { font-size: 5.7cqw; }
+      .logo-b s2 { font-size: 5.7cqw; }
+      .logo-b s3 { font-size: 5.7cqw; }
     }
     .fp-subs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 5px;
       background: var(--card);
-      padding: 8px;
+      padding: 5px;
     }
     .fp-sub {
       aspect-ratio: 1 / 1;
@@ -416,34 +446,34 @@
     .submit-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #ff2700;
       color: #fff;
       border: none;
-      border-radius: 30px;
-      padding: 14px 36px;
-      font-size: 13px;
+      border-radius: 24px;
+      padding: 10px 26px;
+      font-size: 11px;
       font-family: 'Montreal', sans-serif;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       cursor: pointer;
       transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 16px rgba(255,39,0,0.25);
+      box-shadow: 0 3px 12px rgba(255,39,0,0.25);
     }
-    .submit-btn:hover { background: #e02000; transform: scale(1.04); box-shadow: 0 6px 20px rgba(255,39,0,0.35); }
+    .submit-btn:hover { background: #e02000; transform: scale(1.04); box-shadow: 0 5px 16px rgba(255,39,0,0.35); }
 
     .random-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       background: #2a2a2a;
       border: 2px solid #2a2a2a;
       color: #f1efe4;
-      padding: 10px 24px;
-      border-radius: 14px;
+      padding: 8px 16px;
+      border-radius: 10px;
       font-family: 'Montreal', sans-serif;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -795,7 +825,7 @@
 
 <!-- ── INTRO ── -->
 <div style="max-width: 620px; margin: 0 0 52px;">
-  <p style="font-family:'Beastly',serif; font-size:28px; color:#ff2700; line-height:1.15; margin-bottom:14px;">Hlasovani o barvach 2026</p>
+  <p style="font-family:'Beastly',serif; font-size:28px; color:#1a1a1a; line-height:1.15; margin-bottom:14px;">Hlasovani o barvach 2026</p>
   <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7; margin-bottom:10px;">Pro rok 2026 chceme 1981 Run Club posunout dál — zachováme branding a typografii, ale vyměníme barevnou paletu za něco nového.</p>
   <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7;">Níže jsou naše dvě letošní kombinace jako referenční bod. Navrhni svou vlastní nebo hlasuj pro tu, která ti nejvíc sedí. Vítěz se stane oficiální barvou klubu pro&nbsp;2026.</p>
 </div>
@@ -803,8 +833,8 @@
 <div class="sec-label" id="comm-label" style="display:none">Návrhy komunity</div>
 <div id="comm-grid"></div>
 
-<div id="official-label" style="font-family: 'Beastly', serif; font-size: 36px; color: #ff2700; margin-top: 48px; margin-bottom: 12px; line-height: 1;">Nase 2 originalni kombinace</div>
-<div style="font-family: 'Montreal', sans-serif; font-size: 13px; color: #404040; margin-bottom: 28px; letter-spacing: 0.04em;">Nase 2 lanske kombinace - referencni bod pro nove navrhy</div>
+<div id="official-label" style="font-family: 'Beastly', serif; font-size: 36px; color: #1a1a1a; margin-top: 48px; margin-bottom: 12px; line-height: 1; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">Nase 2 originalni kombinace</div>
+<div style="font-family: 'Montreal', sans-serif; font-size: 13px; color: #404040; margin-bottom: 28px; letter-spacing: 0.04em; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">Nase 2 lanske kombinace - referencni bod pro nove navrhy</div>
 <div id="official-slot"></div>
 
 <!-- ── ADD FORM ── -->
@@ -820,7 +850,7 @@
             <input type="color" id="fc1" value="#000000"/>
             <span class="hx">#</span>
           </div>
-          <input type="text" id="fh1" value="000000" maxlength="6" style="width:80px; padding:8px 14px; background:#202020; border:1px solid #2e2e2e; border-radius:10px; color:#888; font-family:monospace; font-size:12px;" placeholder="000000"/>
+          <input type="text" id="fh1" value="000000" maxlength="6" style="width:80px; padding:8px 14px; background:#faf8f3; border:1px solid #c8c4b8; border-radius:8px; color:#333; font-family:monospace; font-size:12px;" placeholder="000000"/>
         </div>
       </div>
       <div class="ffield">
@@ -830,7 +860,7 @@
             <input type="color" id="fc2" value="#ffffff"/>
             <span class="hx">#</span>
           </div>
-          <input type="text" id="fh2" value="ffffff" maxlength="6" style="width:80px; padding:8px 14px; background:#202020; border:1px solid #2e2e2e; border-radius:10px; color:#888; font-family:monospace; font-size:12px;" placeholder="000000"/>
+          <input type="text" id="fh2" value="ffffff" maxlength="6" style="width:80px; padding:8px 14px; background:#faf8f3; border:1px solid #c8c4b8; border-radius:8px; color:#333; font-family:monospace; font-size:12px;" placeholder="000000"/>
         </div>
       </div>
     </div>
@@ -1303,12 +1333,16 @@ function generateRandomCombo() {
     return options[Math.floor(Math.random() * options.length)];
   }
 
-  // Pick random primary color
+  // Pick random primary color, ensure secondary is always different
   const primary = palettes[Math.floor(Math.random() * palettes.length)];
-  const secondary = getContrast(primary.h, primary.s, primary.l);
-
-  const hex1 = hslToHex(primary.h, primary.s, primary.l);
-  const hex2 = hslToHex(secondary.h, secondary.s, secondary.l);
+  let secondary, hex1, hex2;
+  let attempts = 0;
+  do {
+    secondary = getContrast(primary.h, primary.s, primary.l);
+    hex1 = hslToHex(primary.h, primary.s, primary.l);
+    hex2 = hslToHex(secondary.h, secondary.s, secondary.l);
+    attempts++;
+  } while (hex1 === hex2 && attempts < 10);
 
   // Apply to form
   document.getElementById('fc1').value = hex1;
@@ -1558,25 +1592,58 @@ function init() {
 
 init();
 
-// ── TOP 3 ────────────────────────────────────────────────────────
+// ── TOP 5 + NEJHORŠÍCH 5 ─────────────────────────────────────────
 function renderTop3(all) {
+  const allEntries = Object.entries(all)
+    .map(([k, v]) => ({ id: k, color1: v.color1||'#000', color2: v.color2||'#fff', votes: (v.voteCount||0)-(v.downvoteCount||0), dislikes: v.downvoteCount||0 }));
+
+  // Odznaky na kartách — vymaž staré, přidej nové top 3
+  document.querySelectorAll('.medal-badge').forEach(el => el.remove());
+  const top3 = [...allEntries].sort((a, b) => b.votes - a.votes).slice(0, 3);
+  const badgeMedals = ['🥇','🥈','🥉'];
+  top3.forEach((e, i) => {
+    const card = document.getElementById('cb-' + e.id);
+    if (card) {
+      const badge = document.createElement('div');
+      badge.className = 'medal-badge';
+      badge.textContent = badgeMedals[i];
+      card.appendChild(badge);
+    }
+  });
+
+  // TOP 5
   const el = document.getElementById('top3-icons');
-  if (!el) return;
-  const entries = Object.entries(all)
-    .map(([k, v]) => ({ id: k, color1: v.color1||'#000', color2: v.color2||'#fff', votes: (v.voteCount||0)-(v.downvoteCount||0) }))
-    .sort((a, b) => b.votes - a.votes)
-    .slice(0, 3);
-  const medals = ['🥇','🥈','🥉'];
-  const sizes  = [72, 60, 60];
-  el.innerHTML = entries.map((e, i) => `
-    <div style="text-align:center;cursor:pointer;" onclick="document.getElementById('cb-${e.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">
-      <div style="width:${sizes[i]}px;height:${sizes[i]}px;border-radius:10px;overflow:hidden;border:2px solid rgba(0,0,0,0.1);margin:0 auto 6px;box-shadow:0 2px 8px rgba(0,0,0,0.12);display:flex;">
-        <div style="flex:1;background:${e.color1};"></div>
-        <div style="flex:1;background:${e.color2};"></div>
-      </div>
-      <div style="font-size:20px;line-height:1;">${medals[i]}</div>
-      <div style="font-size:10px;color:#888;font-family:-apple-system,sans-serif;margin-top:3px;">${e.votes} hlasů</div>
-    </div>`).join('');
+  if (el) {
+    const top = [...allEntries].sort((a, b) => b.votes - a.votes).slice(0, 5);
+    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+    const sizes  = [72, 64, 64, 52, 52];
+    el.innerHTML = top.map((e, i) => `
+      <div style="text-align:center;cursor:pointer;" onclick="document.getElementById('cb-${e.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">
+        <div style="width:${sizes[i]}px;height:${sizes[i]}px;border-radius:10px;overflow:hidden;border:2px solid rgba(0,0,0,0.1);margin:0 auto 6px;box-shadow:0 2px 8px rgba(0,0,0,0.12);display:flex;">
+          <div style="flex:1;background:${e.color1};"></div>
+          <div style="flex:1;background:${e.color2};"></div>
+        </div>
+        <div style="font-size:${i < 3 ? 20 : 15}px;line-height:1.2;">${medals[i]}</div>
+        <div style="font-size:10px;color:#888;font-family:-apple-system,sans-serif;margin-top:3px;">${e.votes} hlasů</div>
+      </div>`).join('');
+  }
+
+  // NEJHORŠÍCH 5 — nejvíce disliků, při shodě nejméně liků
+  const worst = document.getElementById('worst5-icons');
+  if (worst) {
+    const bottom = [...allEntries].sort((a, b) => b.dislikes - a.dislikes || a.votes - b.votes).slice(0, 5);
+    const labels = ['💀','😬','😑','🙁','😕'];
+    const wsizes = [60, 52, 52, 44, 44];
+    worst.innerHTML = bottom.map((e, i) => `
+      <div style="text-align:center;cursor:pointer;opacity:0.75;" onclick="document.getElementById('cb-${e.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">
+        <div style="width:${wsizes[i]}px;height:${wsizes[i]}px;border-radius:10px;overflow:hidden;border:2px solid rgba(0,0,0,0.08);margin:0 auto 6px;filter:grayscale(30%);display:flex;">
+          <div style="flex:1;background:${e.color1};"></div>
+          <div style="flex:1;background:${e.color2};"></div>
+        </div>
+        <div style="font-size:${i === 0 ? 18 : 14}px;line-height:1.2;">${labels[i]}</div>
+        <div style="font-size:10px;color:#aaa;font-family:-apple-system,sans-serif;margin-top:3px;">${e.dislikes} 👎</div>
+      </div>`).join('');
+  }
 }
 </script>
 
@@ -1614,10 +1681,16 @@ function renderTop3(all) {
   </div>
 </div>
 
-<!-- ── TOP 3 ── -->
-<div id="top3-bar" style="margin: 60px 0 20px; padding: 40px 0 32px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align:center;">
-  <h2 style="font-family:'Beastly',serif; font-size:52px; color:#ff2700; line-height:1; margin-bottom:28px; letter-spacing:0.5px;">TOP 3</h2>
-  <div id="top3-icons" style="display:flex; justify-content:center; gap:28px; align-items:flex-end;"></div>
+<!-- ── TOP 5 ── -->
+<div id="top3-bar" style="margin: 60px 0 0; padding: 40px 0 32px; border-top: 1px solid var(--line); text-align:center;">
+  <h2 style="font-family:'Beastly',serif; font-size:52px; color:#1a1a1a; line-height:1; margin-bottom:28px; letter-spacing:0.5px;">TOP 5</h2>
+  <div id="top3-icons" style="display:flex; justify-content:center; gap:20px; align-items:flex-end; flex-wrap:wrap;"></div>
+</div>
+
+<!-- ── NEJHORŠÍCH 5 ── -->
+<div id="worst5-bar" style="margin: 0 0 20px; padding: 32px 0 32px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align:center;">
+  <h2 style="font-family:'Beastly',serif; font-size:36px; color:#888; line-height:1; margin-bottom:20px; letter-spacing:0.5px;">NEJHORSICH 5</h2>
+  <div id="worst5-icons" style="display:flex; justify-content:center; gap:16px; align-items:flex-end; flex-wrap:wrap;"></div>
 </div>
 
 <!-- ── PUMA FOOTER ── -->
