@@ -295,6 +295,8 @@
     }
     .vbtn:hover { background: rgba(0,0,0,0.08); color: #333; transform: scale(1.03); }
     .vbtn.voted { background: rgba(255,200,40,0.11); border-color: rgba(255,200,40,0.28); color: #d4ac28; }
+    .vbtn.own-combo { opacity: 0.35; cursor: not-allowed; }
+    .vbtn.own-combo:hover { background: none; transform: none; }
     .vbtn .em { font-size: 16px; transition: transform 0.2s; }
     .vbtn.voted .em { transform: scale(1.22) rotate(-8deg); }
     .vlist {
@@ -967,6 +969,14 @@ function castVote(id, voter, type) {
       const toArr = v => !v ? [] : Array.isArray(v) ? v : Object.values(v);
       e.voters    = toArr(e.voters);
       e.downvoters = toArr(e.downvoters);
+      // Zpětné čištění — odstraň hlas autora návrhu pokud existuje
+      const owner = e.submittedBy || e.name;
+      if (owner) {
+        const ownerUpIdx   = e.voters.indexOf(owner);
+        const ownerDownIdx = e.downvoters.indexOf(owner);
+        if (ownerUpIdx   >= 0) { e.voters.splice(ownerUpIdx, 1);     e.voteCount     = Math.max(0, (e.voteCount||0) - 1); }
+        if (ownerDownIdx >= 0) { e.downvoters.splice(ownerDownIdx, 1); e.downvoteCount = Math.max(0, (e.downvoteCount||0) - 1); }
+      }
       if (type === 'up') {
         const upIdx   = e.voters.indexOf(voter);
         const downIdx = e.downvoters.indexOf(voter);
@@ -1143,16 +1153,37 @@ function updateVoteUI(id, count, voters, downCount, downvoters) {
       vbDown.classList.remove('voted');
     }
   }
+
+  // Vlastní návrh — zašedí tlačítka
+  const comboData = rendered[id];
+  const submitter = comboData && (comboData.submittedBy || comboData.name);
+  const isOwn = currentUser && submitter && submitter === currentUser;
+  [vbUp, vbDown].forEach(btn => {
+    if (!btn) return;
+    if (isOwn) {
+      btn.classList.add('own-combo');
+      btn.title = 'Na vlastní návrh nemůžeš hlasovat';
+    } else {
+      btn.classList.remove('own-combo');
+      btn.title = '';
+    }
+  });
 }
 
 function handleVote(id, type) {
   let name = localStorage.getItem('1981rc_username');
   if (!name || !name.trim()) {
-    // Show modal if no name is saved
     showNameModal(() => {
       name = localStorage.getItem('1981rc_username');
       if (name && name.trim()) castVote(id, name.trim(), type || 'up');
     });
+    return;
+  }
+  // Blokace hlasování na vlastní návrh
+  const comboData = rendered[id];
+  const submitter = comboData && (comboData.submittedBy || comboData.name);
+  if (submitter && submitter === name.trim()) {
+    alert('Na vlastní návrh hlasovat nemůžeš 😄');
     return;
   }
   castVote(id, name.trim(), type || 'up');
