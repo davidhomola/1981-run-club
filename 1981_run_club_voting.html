@@ -21,15 +21,15 @@
     :root {
       --red:   #FF2D00;
       --cream: #EDEEE5;
-      --bg:    #0f0f0f;
-      --card:  #181818;
-      --line:  #242424;
+      --bg:    #f1efe4;
+      --card:  #e6e3d8;
+      --line:  #d0cdc2;
     }
 
     body {
       background: var(--bg);
       font-family: 'Montreal', sans-serif;
-      color: #fff;
+      color: #1a1a1a;
       padding: 52px 48px;
       max-width: 1100px;
       margin: 0 auto;
@@ -49,7 +49,7 @@
     header h1 {
       font-family: 'Beastly', serif;
       font-size: 50px;
-      color: var(--cream);
+      color: #ff2700;
       letter-spacing: 1px;
       line-height: 1;
     }
@@ -177,7 +177,7 @@
     /* ── FOOTER ── */
     .combo-foot {
       padding: 18px 22px 22px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid rgba(0,0,0,0.07);
       background: var(--card);
     }
     .foot-top {
@@ -211,7 +211,7 @@
     .ch-dot {
       width: 20px; height: 20px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(0,0,0,0.15);
       flex-shrink: 0;
     }
     .ch-hex { font-size: 10px; font-family: monospace; color: #484848; }
@@ -227,9 +227,9 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.05);
       position: relative;
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid rgba(0,0,0,0.12);
       border-radius: 30px;
       padding: 8px 17px;
       cursor: pointer;
@@ -239,7 +239,7 @@
       transition: all 0.17s;
       user-select: none;
     }
-    .vbtn:hover { background: rgba(255,255,255,0.1); color: #bbb; transform: scale(1.03); }
+    .vbtn:hover { background: rgba(0,0,0,0.08); color: #333; transform: scale(1.03); }
     .vbtn.voted { background: rgba(255,200,40,0.11); border-color: rgba(255,200,40,0.28); color: #d4ac28; }
     .vbtn .em { font-size: 16px; transition: transform 0.2s; }
     .vbtn.voted .em { transform: scale(1.22) rotate(-8deg); }
@@ -300,36 +300,36 @@
       border: 1px solid var(--line);
       border-radius: 20px;
       padding: 30px 32px 34px;
-      max-width: 620px;
+      max-width: 100%;
     }
     .frow { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
     .ffield { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 150px; }
     .ffield label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #404040; }
     .ffield input[type="text"] {
-      background: #202020;
-      border: 1px solid #2e2e2e;
+      background: #faf8f3;
+      border: 1px solid #c8c4b8;
       border-radius: 10px;
       padding: 11px 14px;
-      color: #fff;
+      color: #1a1a1a;
       font-size: 14px;
       font-family: 'Montreal', sans-serif;
       outline: none;
       transition: border-color 0.15s;
     }
-    .ffield input[type="text"]:focus { border-color: #484848; }
-    .ffield input[type="text"]::placeholder { color: #2e2e2e; }
+    .ffield input[type="text"]:focus { border-color: #999; }
+    .ffield input[type="text"]::placeholder { color: #aaa; }
     .cw {
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #202020;
-      border: 1px solid #2e2e2e;
+      background: #faf8f3;
+      border: 1px solid #c8c4b8;
       border-radius: 10px;
       padding: 8px 14px;
       cursor: pointer;
       transition: border-color 0.15s;
     }
-    .cw:focus-within { border-color: #484848; }
+    .cw:focus-within { border-color: #999; }
     .cw input[type="color"] { width: 28px; height: 28px; border: none; outline: none; border-radius: 50%; padding: 0; cursor: pointer; background: none; }
     .hx { font-size: 12px; font-family: monospace; color: #888; }
 
@@ -386,7 +386,7 @@
       cursor: pointer;
       transition: background 0.15s, transform 0.15s;
     }
-    .submit-btn:hover { background: #fff; transform: scale(1.03); }
+    .submit-btn:hover { background: #dddad0; transform: scale(1.03); }
 
     /* ── FIREBASE GUIDE ── */
     .fb-guide {
@@ -419,6 +419,31 @@
       .add-form { padding: 20px; }
     }
   
+    /* ── MOTHERLODE EASTER EGG ── */
+    #motherlodeModal {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.85);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 99999; opacity:0; visibility:hidden;
+      transition: opacity 0.3s;
+    }
+    #motherlodeModal.active { opacity:1; visibility:visible; }
+    .mlode-card {
+      background: #1c1f26;
+      border: 2px solid #4be84b;
+      border-radius: 16px;
+      padding: 30px 36px 28px;
+      max-width: 420px; width: 90%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(75,232,75,0.3);
+      animation: mlodePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes mlodePop { from { transform: scale(0.5) rotate(-5deg); opacity:0; } to { transform: scale(1); opacity:1; } }
+    .mlode-card img { width:100%; border-radius: 10px; margin-bottom: 18px; }
+    .mlode-card h2 { font-family:'Beastly',serif; font-size:28px; color:#4be84b; margin-bottom:8px; }
+    .mlode-card p { font-size:14px; color:#ccc; margin-bottom:20px; }
+    .mlode-close { background:#4be84b; color:#000; border:none; border-radius:20px; padding:10px 28px; font-size:13px; cursor:pointer; font-family:'Montreal',sans-serif; letter-spacing:0.08em; }
+
     /* ── WELCOME NAME MODAL ── */
     .modal-overlay {
       position: fixed;
@@ -532,52 +557,36 @@
       opacity: 0.4;
       cursor: not-allowed;
     }
+    .admin-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
     .change-name-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
       font-size: 11px;
-      color: #666;
+      color: #555;
       background: none;
-      border: 1px solid #333;
-      padding: 8px 14px;
+      border: 1px solid #bbb;
+      padding: 7px 13px;
       border-radius: 6px;
       cursor: pointer;
       font-family: 'Montreal', sans-serif;
       letter-spacing: 0.05em;
       transition: all 0.2s ease;
-      z-index: 9998;
     }
     .change-name-btn:hover {
-      color: #999;
-      border-color: #555;
+      color: #222;
+      border-color: #888;
     }
     @media (max-width: 600px) {
-      .modal-card {
-        padding: 40px 30px;
-      }
-      .modal-heading {
-        font-size: 28px;
-      }
-      .change-name-btn {
-        top: 52px;
-        right: 48px;
-      }
+      .modal-card { padding: 40px 30px; }
+      .modal-heading { font-size: 28px; }
+      .admin-bar { flex-direction: column; }
     }
 </style>
 </head>
 <body>
-
-<header>
-  <div>
-    <h1>1981 RUN CLUB</h1>
-    <p>Hlasování o barvách &middot; 2026</p>
-  </div>
-  <div id="sync-pill" class="sync-pill local">
-    <span class="sync-dot"></span>
-    <span id="sync-txt">Lokální &mdash; nastav sync</span>
-  </div>
-</header>
 
 <!-- ── WELCOME NAME MODAL ── -->
 <div id="nameModal" class="modal-overlay">
@@ -590,15 +599,29 @@
   </div>
 </div>
 
-<!-- Change name button -->
-<button id="changeNameBtn" class="change-name-btn">Změnit jméno</button>
+<div class="admin-bar">
+  <button id="changeNameBtn" class="change-name-btn">Změnit jméno</button>
+  <button id="deleteAllBtn" class="change-name-btn" onclick="handleDeleteAll()">🗑 Smazat přidané</button>
+  <button id="resetBtn" class="change-name-btn" onclick="handleReset()">↺ Reset stránky</button>
+</div>
 
+<header>
+  <div>
+    <h1>1981 RUN CLUB</h1>
+    <p>Hlasování o barvách &middot; 2026</p>
+  </div>
+  <div id="sync-pill" class="sync-pill local">
+    <span class="sync-dot"></span>
+    <span id="sync-txt">Lokální &mdash; nastav sync</span>
+  </div>
+</header>
 
-<div class="sec-label">Naše 2 kombinace</div>
-<div id="official-slot"></div>
 
 <div class="sec-label" id="comm-label" style="display:none">Návrhy komunity</div>
 <div id="comm-grid"></div>
+
+<div class="sec-label" id="official-label">Naše 2 originální kombinace</div>
+<div id="official-slot"></div>
 
 <!-- ── ADD FORM ── -->
 <div class="add-sec">
@@ -714,37 +737,31 @@ function castVote(id, voter, type) {
   if (db) {
     db.ref('/combos/' + id).transaction(e => {
       if (!e) e = { voters: [], voteCount: 0, downvoters: [], downvoteCount: 0 };
+      // Firebase sometimes stores arrays as objects {0:'a',1:'b'} — normalise to real arrays
+      const toArr = v => !v ? [] : Array.isArray(v) ? v : Object.values(v);
+      e.voters    = toArr(e.voters);
+      e.downvoters = toArr(e.downvoters);
       if (type === 'up') {
-        if (!e.voters) e.voters = [];
-        if (!e.downvoters) e.downvoters = [];
-        const upIdx = e.voters.indexOf(voter);
+        const upIdx   = e.voters.indexOf(voter);
         const downIdx = e.downvoters.indexOf(voter);
         if (upIdx >= 0) {
-          e.voters.splice(upIdx,1);
-          e.voteCount = Math.max(0,(e.voteCount||0)-1);
+          e.voters.splice(upIdx, 1);
+          e.voteCount = Math.max(0, (e.voteCount||0) - 1);
         } else {
-          if (downIdx >= 0) {
-            e.downvoters.splice(downIdx,1);
-            e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
-          }
+          if (downIdx >= 0) { e.downvoters.splice(downIdx, 1); e.downvoteCount = Math.max(0, (e.downvoteCount||0) - 1); }
           e.voters.push(voter);
-          e.voteCount = (e.voteCount||0)+1;
+          e.voteCount = (e.voteCount||0) + 1;
         }
       } else {
-        if (!e.downvoters) e.downvoters = [];
-        if (!e.voters) e.voters = [];
         const downIdx = e.downvoters.indexOf(voter);
-        const upIdx = e.voters.indexOf(voter);
+        const upIdx   = e.voters.indexOf(voter);
         if (downIdx >= 0) {
-          e.downvoters.splice(downIdx,1);
-          e.downvoteCount = Math.max(0,(e.downvoteCount||0)-1);
+          e.downvoters.splice(downIdx, 1);
+          e.downvoteCount = Math.max(0, (e.downvoteCount||0) - 1);
         } else {
-          if (upIdx >= 0) {
-            e.voters.splice(upIdx,1);
-            e.voteCount = Math.max(0,(e.voteCount||0)-1);
-          }
+          if (upIdx >= 0) { e.voters.splice(upIdx, 1); e.voteCount = Math.max(0, (e.voteCount||0) - 1); }
           e.downvoters.push(voter);
-          e.downvoteCount = (e.downvoteCount||0)+1;
+          e.downvoteCount = (e.downvoteCount||0) + 1;
         }
       }
       return e;
@@ -856,7 +873,8 @@ function renderEntry(id, data) {
   } else {
     const d = document.createElement('div');
     d.innerHTML = h;
-    document.getElementById('comm-grid').appendChild(d.firstElementChild);
+    const grid = document.getElementById('comm-grid');
+    grid.insertBefore(d.firstElementChild, grid.firstChild);
     document.getElementById('comm-label').style.display = 'flex';
   }
 }
@@ -1040,10 +1058,11 @@ function submitCombo() {
 
 // ── DELETE ─────────────────────────────────────────────────────────
 function handleDelete(id) {
-  const pwd = prompt('Password required to delete this combo:');
+  const pwd = prompt('Heslo pro smazání:');
   if (!pwd) return;
+  if (pwd.toLowerCase() === 'motherlode') { showMotherlode(); return; }
   if (pwd !== '1981admin') {
-    alert('Wrong password!');
+    alert('Špatné heslo!');
     return;
   }
   if (confirm('Are you sure you want to delete this combination?')) {
@@ -1056,6 +1075,48 @@ function handleDelete(id) {
     }
     const el = document.getElementById('cb-' + id);
     if (el) el.remove();
+  }
+}
+
+// ── DELETE ALL / RESET ───────────────────────────────────────────
+function showMotherlode() {
+  const name = localStorage.getItem('1981rc_username') || 'kamaráde';
+  document.getElementById('mlode-msg').textContent = 'Dobrý pokus, ' + name + '! 😄';
+  document.getElementById('motherlodeModal').classList.add('active');
+}
+
+function handleDeleteAll() {
+  const pwd = prompt('Heslo pro smazání všech přidaných barev:');
+  if (!pwd) return;
+  if (pwd.toLowerCase() === 'motherlode') { showMotherlode(); return; }
+  if (pwd !== '1981admin') { alert('Špatné heslo!'); return; }
+  if (!confirm('Smazat všechny přidané kombinace? Originální 2 zůstanou.')) return;
+  if (db) {
+    db.ref('/combos').once('value', snap => {
+      const all = snap.val() || {};
+      Object.keys(all).forEach(k => { if (!all[k].official) db.ref('/combos/' + k).remove(); });
+    });
+  } else {
+    const d = lsLoad();
+    Object.keys(d).forEach(k => { if (!d[k].official) delete d[k]; });
+    lsSave(d);
+  }
+  document.querySelectorAll('#comm-grid .combo').forEach(el => el.remove());
+  document.getElementById('comm-label').style.display = 'none';
+  Object.keys(rendered).forEach(k => { if (k !== 'official' && k !== 'official2') delete rendered[k]; });
+}
+
+function handleReset() {
+  const pwd = prompt('Heslo pro kompletní reset (smaže vše včetně hlasů u originálních):');
+  if (!pwd) return;
+  if (pwd.toLowerCase() === 'motherlode') { showMotherlode(); return; }
+  if (pwd !== '1981admin') { alert('Špatné heslo!'); return; }
+  if (!confirm('Opravdu resetovat celou stránku? Smažou se všechny barvy i hlasy.')) return;
+  if (db) {
+    db.ref('/combos').remove().then(() => { Object.keys(rendered).forEach(k => delete rendered[k]); location.reload(); });
+  } else {
+    localStorage.removeItem(LS_KEY);
+    location.reload();
   }
 }
 
@@ -1079,7 +1140,7 @@ function init() {
 
   subscribeAll(all => {
     seedOfficial(all);
-    const sorted = Object.entries(all).sort((a,b) => a[1].official ? -1 : b[1].official ? 1 : (b[1].timestamp||0)-(a[1].timestamp||0));
+    const sorted = Object.entries(all).sort((a,b) => a[1].official ? 1 : b[1].official ? -1 : (b[1].timestamp||0)-(a[1].timestamp||0));
     sorted.forEach(([id, data]) => renderEntry(id, data));
   });
 }
@@ -1087,12 +1148,43 @@ function init() {
 init();
 </script>
 
+<!-- ── MOTHERLODE MODAL ── -->
+<div id="motherlodeModal">
+  <div class="mlode-card">
+    <!-- Sims Plumbob SVG -->
+    <svg viewBox="0 0 120 160" width="100" height="133" style="display:block;margin:0 auto 16px;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pg1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#7ef07e"/>
+          <stop offset="100%" style="stop-color:#1a9e1a"/>
+        </linearGradient>
+        <linearGradient id="pg2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#b6ffb6"/>
+          <stop offset="100%" style="stop-color:#2cc82c"/>
+        </linearGradient>
+      </defs>
+      <!-- top pyramid -->
+      <polygon points="60,4 4,62 60,52" fill="url(#pg2)" opacity="0.9"/>
+      <polygon points="60,4 116,62 60,52" fill="url(#pg1)"/>
+      <polygon points="4,62 60,52 116,62" fill="#3dd63d" opacity="0.7"/>
+      <!-- bottom pyramid -->
+      <polygon points="4,62 60,52 60,156" fill="url(#pg1)" opacity="0.85"/>
+      <polygon points="116,62 60,52 60,156" fill="#1a8a1a"/>
+      <!-- shine -->
+      <polygon points="60,4 4,62 28,38" fill="white" opacity="0.18"/>
+    </svg>
+    <h2>§§ +50,000 §§</h2>
+    <p id="mlode-msg">Dobrý pokus!</p>
+    <button class="mlode-close" onclick="document.getElementById('motherlodeModal').classList.remove('active')">Zavřít</button>
+  </div>
+</div>
+
 <!-- ── PUMA FOOTER ── -->
 <footer style="text-align:center; padding: 40px 20px 40px; opacity: 0.55;">
   <p style="font-family: -apple-system, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #666; margin-bottom: 16px;">Supported by</p>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Puma_AG.svg/240px-Puma_AG.svg.png"
+  <img src="https://i.pinimg.com/1200x/ae/e2/33/aee233e244b1519db4fc99dd3a88d187.jpg"
        alt="Puma"
-       style="height: 52px; filter: brightness(0) invert(1); opacity: 0.75;"
+       style="height: 64px; opacity: 0.75; border-radius: 4px;"
        onerror="this.style.display='none'">
 </footer>
 
