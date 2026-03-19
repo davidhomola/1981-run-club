@@ -801,8 +801,37 @@
       left: 50%;
       transform: translateX(-50%);
       margin-top: -52px;
+      margin-bottom: 0;
+      box-sizing: border-box;
+    }
+    .vote-counter-bar {
+      background: #e8e4d6;
+      border-bottom: 1px solid #c8c4b2;
+      padding: 7px 48px;
+      position: relative;
+      width: 100vw;
+      left: 50%;
+      transform: translateX(-50%);
       margin-bottom: 40px;
       box-sizing: border-box;
+      font-family: 'Montreal', sans-serif;
+      font-size: 12px;
+      color: #555;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .vote-counter-bar .vc-limit { color: #ff2700; font-weight: 600; }
+    .vote-counter-bar .vc-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff; border: 1px solid #c8c4b2; border-radius: 20px;
+      padding: 2px 10px; font-size: 11px;
+    }
+    .vote-counter-bar .vc-chip.depleted { border-color: #ff2700; color: #ff2700; background: rgba(255,39,0,0.05); }
+    .vote-counter-bar .vc-chip.vc-locked { border-style: dashed; opacity: 0.55; }
+    @media (max-width: 600px) {
+      .vote-counter-bar { padding: 6px 20px; font-size: 11px; }
     }
     .change-name-btn {
       font-size: 11px;
@@ -921,7 +950,7 @@
 <div id="nameModal" class="modal-overlay">
   <div class="modal-card">
     <button id="modalCloseBtn" class="modal-close-btn">×</button>
-    <div class="modal-heading">Vítej v 1981 Run Club!</div>
+    <div class="modal-heading">VITEJ V 1981 RUN CLUB!</div>
     <div class="modal-subtext">Jak se jmenuješ?</div>
     <input type="text" id="modalNameInput" class="modal-input" placeholder="Tvoje jméno" maxlength="40" autocomplete="off"/>
     <button id="modalButton" class="modal-button" disabled>Pokračovat →</button>
@@ -932,7 +961,12 @@
   <button id="changeNameBtn" class="change-name-btn">Změnit jméno</button>
   <button id="deleteAllBtn" class="change-name-btn" onclick="handleDeleteAll()">🗑 Smazat přidané</button>
   <button class="change-name-btn" onclick="handleCleanSelfVotes()">🧹 Vyčistit vlastní hlasy</button>
+  <button class="change-name-btn" onclick="handleResetAllVotes()">🗳 Reset hlasů</button>
   <button id="resetBtn" class="change-name-btn" onclick="handleReset()">↺ Reset stránky</button>
+</div>
+<!-- Vote counter strip -->
+<div id="vote-counter-bar" class="vote-counter-bar">
+  <span id="vote-counter-text">Načítám hlasy…</span>
 </div>
 
 <header>
@@ -948,15 +982,16 @@
 <!-- ── INTRO ── -->
 <div style="max-width: 620px; margin: 0 0 52px;">
   <p style="font-family:'Beastly',serif; font-size:28px; color:#1a1a1a; line-height:1.15; margin-bottom:14px;">Hlasovani o barvach 2026</p>
-  <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7; margin-bottom:10px;">Pro rok 2026 chceme 1981 Run Club posunout dál — zachováme branding a typografii, ale vyměníme barevnou paletu za něco nového.</p>
-  <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7;">Níže jsou naše dvě letošní kombinace jako referenční bod. Navrhni svou vlastní nebo hlasuj pro tu, která ti nejvíc sedí. Vítěz se stane oficiální barvou klubu pro&nbsp;2026.</p>
+  <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7; margin-bottom:10px;">Pro rok 2026 dostává 1981 Run Club nové barvy — a ty rozhoduješ, jaké to budou. Chceme vítěze vybrat co nejdříve, takže neváhej a hlasuj hned!</p>
+  <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7; margin-bottom:10px;">Každý má k dispozici <strong>3&nbsp;❤️ like</strong> a <strong>2&nbsp;👎 dislike</strong>. Využij je všechny — každý hlas se počítá. Níže najdeš naše dvě loňské kombinace jako referenční bod a návrhy komunity.</p>
+  <p style="font-family:'Montreal',sans-serif; font-size:15px; color:#444; line-height:1.7;">Líbí se ti jiná kombinace? Navrhni vlastní dole v generátoru a ostatní na ni mohou hlasovat. Kombinace s nejvíce hlasy se stane <strong>oficiální barvou klubu pro&nbsp;2026</strong>.</p>
 </div>
 
 <div class="sec-label" id="comm-label" style="display:none">Návrhy komunity</div>
 <div id="comm-grid"></div>
 
-<div id="official-label" style="font-family: 'Beastly', serif; font-size: 36px; color: #1a1a1a; margin-top: 48px; margin-bottom: 12px; line-height: 1; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">Nase 2 originalni kombinace</div>
-<div style="font-family: 'Montreal', sans-serif; font-size: 13px; color: #404040; margin-bottom: 28px; letter-spacing: 0.04em; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">Nase 2 lanske kombinace - referencni bod pro nove navrhy</div>
+<div id="official-label" style="font-family: 'Beastly', serif; font-size: 36px; color: #1a1a1a; margin-top: 48px; margin-bottom: 12px; line-height: 1; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">NASE 2 ORIGINALNI KOMBINACE</div>
+<div style="font-family: 'Montreal', sans-serif; font-size: 13px; color: #404040; margin-bottom: 28px; letter-spacing: 0.04em; text-align:center; max-width:66.6%; margin-left:auto; margin-right:auto;">Naše 2 loňské kombinace — referenční bod pro nové návrhy</div>
 <div id="official-slot"></div>
 
 <!-- ── ADD FORM ── -->
@@ -1366,6 +1401,40 @@ function updateVoteUI(id, count, voters, downCount, downvoters) {
   });
 }
 
+// ── VOTE LIMITS ────────────────────────────────────────────────────
+const MAX_UP   = 3;
+const MAX_DOWN = 2;
+let userVoteState = { up: 0, down: 0 };
+
+function recountUserVotes(all) {
+  const name = localStorage.getItem('1981rc_username');
+  if (!name || !name.trim()) { updateVoteCounterBar(0, 0); return; }
+  const u = name.trim();
+  const toArr = v => !v ? [] : Array.isArray(v) ? v : Object.values(v);
+  let up = 0, down = 0;
+  Object.values(all).forEach(d => {
+    if (toArr(d.voters).includes(u))     up++;
+    if (toArr(d.downvoters).includes(u)) down++;
+  });
+  userVoteState = { up, down };
+  updateVoteCounterBar(up, down);
+}
+
+function updateVoteCounterBar(up, down) {
+  const el = document.getElementById('vote-counter-text');
+  if (!el) return;
+  const remUp    = Math.max(0, MAX_UP   - up);
+  const remDown  = Math.max(0, MAX_DOWN - down);
+  const likesFullyUsed = up >= MAX_UP;
+  const upClass    = remUp   === 0 ? 'vc-chip depleted' : 'vc-chip';
+  const downClass  = remDown === 0 ? 'vc-chip depleted' : (likesFullyUsed ? 'vc-chip' : 'vc-chip vc-locked');
+  const lockHint   = !likesFullyUsed ? ` <span style="opacity:.55;font-size:10px;">🔒 nejdřív využij ❤️</span>` : '';
+  el.innerHTML =
+    `<span>Zbývající hlasy:</span>` +
+    `<span class="${upClass}">❤️ ${remUp} z ${MAX_UP}</span>` +
+    `<span class="${downClass}">👎 ${remDown} z ${MAX_DOWN}${lockHint}</span>`;
+}
+
 function handleVote(id, type) {
   let name = localStorage.getItem('1981rc_username');
   if (!name || !name.trim()) {
@@ -1380,6 +1449,32 @@ function handleVote(id, type) {
   const submitter = comboData && (comboData.submittedBy || comboData.name);
   if (submitter && submitter === name.trim()) {
     alert('Na vlastní návrh hlasovat nemůžeš 😄');
+    return;
+  }
+  // Check vote limits — only block NEW votes (not removing existing ones)
+  const toArr = v => !v ? [] : Array.isArray(v) ? v : Object.values(v);
+  const alreadyUp   = comboData && toArr(comboData.voters).includes(name.trim());
+  const alreadyDown = comboData && toArr(comboData.downvoters).includes(name.trim());
+  if ((type === 'up' || !type) && !alreadyUp && userVoteState.up >= MAX_UP) {
+    showInfoModal('❤️',
+      'Všechny like jsou pryč!',
+      `Použil/a jsi všechny ${MAX_UP}&nbsp;❤️. Pokud chceš hlasovat pro tuto kombinaci, nejdřív zruš jiný hlas kliknutím na tlačítko ❤️ u dané kombinace.`
+    );
+    return;
+  }
+  if (type === 'down' && !alreadyDown && userVoteState.up < MAX_UP) {
+    showInfoModal('🔒',
+      'Nejdřív využij všechny ❤️',
+      `Dislike lze použít až po tom, co využiješ všech <strong>${MAX_UP}&nbsp;❤️ like</strong>.<br><br>` +
+      `Zbývá ti ještě <strong>${MAX_UP - userVoteState.up}&nbsp;❤️</strong> k rozdání — přiřaď je kombinacím, které se ti líbí, a pak se ti odemknou 👎.`
+    );
+    return;
+  }
+  if (type === 'down' && !alreadyDown && userVoteState.down >= MAX_DOWN) {
+    showInfoModal('👎',
+      'Všechny dislike jsou pryč!',
+      `Použil/a jsi všechny ${MAX_DOWN}&nbsp;👎. Pokud chceš hlasovat proti této kombinaci, nejdřív zruš jiný dislike.`
+    );
     return;
   }
   castVote(id, name.trim(), type || 'up');
@@ -1474,15 +1569,45 @@ function changeUserName() {
   showNameModal(null, true);
 }
 
+// ── INFO POPUP ─────────────────────────────────────────────────────
+function showInfoModal(icon, title, body) {
+  document.getElementById('info-icon').textContent  = icon;
+  document.getElementById('info-title').textContent = title;
+  document.getElementById('info-body').innerHTML    = body;
+  document.getElementById('infoModal').classList.add('active');
+}
+function closeInfoModal() {
+  document.getElementById('infoModal').classList.remove('active');
+}
+
+// ── WELCOME BACK MODAL ─────────────────────────────────────────────
+function showWelcomeModal(name) {
+  const modal = document.getElementById('welcomeModal');
+  if (!modal) return;
+  document.getElementById('welcome-heading').textContent = `Vítej zpátky, ${name}! 👋`;
+  document.getElementById('welcome-body').innerHTML =
+    `Jsme rádi, že ses přihlásil/a.<br>` +
+    `Prosíme o <strong>finální hlasování</strong> — tvůj hlas rozhoduje o barvách 1981 Run Clubu pro rok 2026.<br><br>` +
+    `Máš k dispozici <strong>3&nbsp;❤️ like</strong> a <strong>2&nbsp;👎 dislike</strong>.<br>` +
+    `<em>Pozor: 👎 se odemknou až po tom, co využiješ všechny 3&nbsp;❤️.</em>`;
+  modal.classList.add('active');
+}
+function closeWelcomeModal() {
+  document.getElementById('welcomeModal').classList.remove('active');
+}
+
 // Initialize modal on page load
 document.addEventListener('DOMContentLoaded', () => {
   const changeBtn = document.getElementById('changeNameBtn');
   changeBtn.onclick = changeUserName;
 
-  // Show welcome modal only if no name is saved
+  // Show name modal for new visitors; welcome modal for returning ones (once per session)
   const savedName = localStorage.getItem('1981rc_username');
   if (!savedName) {
     showNameModal();
+  } else if (!sessionStorage.getItem('1981rc_welcomed')) {
+    sessionStorage.setItem('1981rc_welcomed', '1');
+    showWelcomeModal(savedName);
   }
   
   // Set up input listener to enable/disable modal button
@@ -1584,6 +1709,11 @@ function closeShadeModal() {
 // ── ESC KEY — close any active modal ──────────────────────────────
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
+  // Info popup
+  if (document.getElementById('infoModal').classList.contains('active')) { closeInfoModal(); return; }
+  // Welcome modal
+  const welcomeModal = document.getElementById('welcomeModal');
+  if (welcomeModal && welcomeModal.classList.contains('active')) { closeWelcomeModal(); return; }
   // Shade picker modal
   if (document.getElementById('shade-modal').classList.contains('active')) {
     closeShadeModal();
@@ -2074,6 +2204,33 @@ function handleDeleteAll() {
   Object.keys(rendered).forEach(k => { if (k !== 'official' && k !== 'official2') delete rendered[k]; });
 }
 
+function handleResetAllVotes() {
+  const pwd = prompt('Heslo pro reset všech hlasů:');
+  if (!pwd) return;
+  if (pwd.toLowerCase() === 'motherlode') { showMotherlode(); return; }
+  if (pwd !== '1981admin') { alert('Špatné heslo!'); return; }
+  if (!confirm('Opravdu vynulovat všechny hlasy? Tuto akci nelze vrátit.')) return;
+  if (db) {
+    db.ref('/combos').once('value', snap => {
+      const all = snap.val() || {};
+      const updates = {};
+      Object.keys(all).forEach(k => {
+        updates[k + '/voters']       = [];
+        updates[k + '/voteCount']    = 0;
+        updates[k + '/downvoters']   = [];
+        updates[k + '/downvoteCount'] = 0;
+      });
+      db.ref('/combos').update(updates).then(() => alert('Všechny hlasy byly vynulovány.'));
+    });
+  } else {
+    const d = lsLoad();
+    Object.keys(d).forEach(k => { d[k].voters=[]; d[k].voteCount=0; d[k].downvoters=[]; d[k].downvoteCount=0; });
+    lsSave(d);
+    alert('Všechny hlasy byly vynulovány.');
+    location.reload();
+  }
+}
+
 function handleReset() {
   const pwd = prompt('Heslo pro kompletní reset (smaže vše včetně hlasů u originálních):');
   if (!pwd) return;
@@ -2111,6 +2268,7 @@ function init() {
     const sorted = Object.entries(all).sort((a,b) => a[1].official ? 1 : b[1].official ? -1 : (a[1].timestamp||0)-(b[1].timestamp||0));
     sorted.forEach(([id, data]) => renderEntry(id, data));
     renderTop3(all);
+    recountUserVotes(all);
   });
 }
 
@@ -2215,6 +2373,32 @@ function renderTop3(all) {
 <div id="worst5-bar" style="margin: 0 0 20px; padding: 32px 0 32px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-align:center;">
   <h2 style="font-family:'Beastly',serif; font-size:36px; color:#888; line-height:1; margin-bottom:20px; letter-spacing:0.5px;">NEJHORSICH 5</h2>
   <div id="worst5-icons" style="display:flex; justify-content:center; gap:16px; align-items:flex-end; flex-wrap:wrap;"></div>
+</div>
+
+<!-- ── WELCOME BACK MODAL ── -->
+<div id="welcomeModal" class="modal-overlay" onclick="if(event.target===this)closeWelcomeModal()">
+  <div class="modal-card" style="max-width:460px; text-align:center;">
+    <button class="modal-close-btn" onclick="closeWelcomeModal()">×</button>
+    <div class="modal-heading" id="welcome-heading" style="font-family:'Montreal',sans-serif; font-size:26px; font-weight:700; letter-spacing:0.01em;">Vítej zpátky!</div>
+    <div id="welcome-body" class="modal-subtext" style="line-height:1.75; font-size:14px; margin-bottom:20px;"></div>
+    <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin-bottom:6px;">
+      <span class="vc-chip" style="font-size:13px; padding:5px 14px;">❤️ 3 like</span>
+      <span style="font-size:12px; color:#aaa;">→ pak</span>
+      <span class="vc-chip vc-locked" style="font-size:13px; padding:5px 14px;">👎 2 dislike</span>
+    </div>
+    <button class="modal-button" style="margin-top:18px;" onclick="closeWelcomeModal()">Jdu hlasovat →</button>
+  </div>
+</div>
+
+<!-- ── INFO POPUP (vote rules etc.) ── -->
+<div id="infoModal" class="modal-overlay" onclick="if(event.target===this)closeInfoModal()">
+  <div class="modal-card" style="max-width:400px; text-align:center;">
+    <button class="modal-close-btn" onclick="closeInfoModal()">×</button>
+    <div id="info-icon"  style="font-size:40px; margin-bottom:10px;">ℹ️</div>
+    <div id="info-title" style="font-family:'Montreal',sans-serif; font-size:20px; font-weight:700; color:#1a1a1a; margin-bottom:12px;"></div>
+    <div id="info-body"  class="modal-subtext" style="font-size:14px; line-height:1.75; margin-bottom:20px;"></div>
+    <button class="modal-button" onclick="closeInfoModal()">Rozumím →</button>
+  </div>
 </div>
 
 <!-- ── SHADE PICKER MODAL ── -->
