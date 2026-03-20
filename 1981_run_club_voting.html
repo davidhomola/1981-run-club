@@ -518,6 +518,69 @@
     .fb-guide ol li b { color: #505050; }
     .fb-guide code { background: #1c1c1c; padding: 1px 6px; border-radius: 4px; font-size: 11px; color: #606060; font-family: monospace; }
 
+    /* ── SHUFFLE FOOTER ── */
+    .shuffle-footer {
+      background: #1a1a1a;
+      color: var(--cream);
+      padding: 28px 48px;
+      position: relative;
+      width: 100vw;
+      left: 50%;
+      transform: translateX(-50%);
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 0;
+    }
+    .shuffle-footer-label {
+      font-family: 'Montreal', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(241,239,228,0.55);
+      line-height: 1.5;
+    }
+    .shuffle-footer-label strong {
+      display: block;
+      font-size: 15px;
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+    .shuffle-btn {
+      background: var(--cream);
+      color: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-family: 'Montreal', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s, transform 0.12s;
+      white-space: nowrap;
+    }
+    .shuffle-btn:hover { background: #fff; transform: scale(1.04); }
+    .shuffle-btn:active { transform: scale(0.97); }
+    .shuffle-btn .shuffle-icon {
+      font-size: 18px;
+      display: inline-block;
+      transition: transform 0.35s cubic-bezier(.5,1.6,.4,1);
+    }
+    .shuffle-btn:hover .shuffle-icon { transform: rotate(180deg); }
+    @media (max-width: 600px) {
+      .shuffle-footer { padding: 22px 20px; flex-direction: column; align-items: flex-start; }
+      .shuffle-btn { width: 100%; justify-content: center; }
+    }
+
     footer {
       margin-top: 80px;
       padding-top: 24px;
@@ -1616,6 +1679,25 @@ function changeUserName() {
   // Show modal with existing name, so close button is visible
   showNameModal(null, true);
 }
+// ── SHUFFLE GRID ────────────────────────────────────────────────────
+function shuffleGrid() {
+  const grid = document.getElementById('comm-grid');
+  const cards = Array.from(grid.children);
+  if (cards.length < 2) return;
+  // Fisher-Yates shuffle
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+  // Brief fade-out, reorder DOM, fade back in
+  grid.style.transition = 'opacity 0.18s ease';
+  grid.style.opacity = '0.3';
+  setTimeout(() => {
+    cards.forEach(c => grid.appendChild(c));
+    grid.style.opacity = '1';
+  }, 190);
+}
+
 // ── INFO POPUP ─────────────────────────────────────────────────────
 function showInfoModal(icon, title, body) {
   document.getElementById('info-icon').textContent  = icon;
@@ -2518,13 +2600,24 @@ function renderTop3(all) {
 </div>
 
 <!-- ── PUMA FOOTER ── -->
-<footer style="text-align:center; padding: 40px 20px 40px; opacity: 0.55;">
+<footer style="text-align:center; padding: 40px 20px 20px; opacity: 0.55;">
   <p style="font-family: -apple-system, sans-serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #666; margin-bottom: 16px;">Supported by</p>
   <img src="https://i.pinimg.com/1200x/ae/e2/33/aee233e244b1519db4fc99dd3a88d187.jpg"
        alt="Puma"
        style="height: 64px; opacity: 0.75; border-radius: 4px;"
        onerror="this.style.display='none'">
 </footer>
+
+<!-- ── SHUFFLE FOOTER ── -->
+<div class="shuffle-footer">
+  <div class="shuffle-footer-label">
+    <strong>Zamíchej pořadí návrhů</strong>
+    Návrhy komunity jsou seřazeny od nejnovějšího — tady je můžeš namíchat náhodně
+  </div>
+  <button class="shuffle-btn" onclick="shuffleGrid()">
+    <span class="shuffle-icon">🔀</span> Zamíchat návrhy
+  </button>
+</div>
 
 </body>
 </html>
